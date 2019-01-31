@@ -1,3 +1,7 @@
+variables:
+  git_user: 5nafu
+  git_email: info@tvollmer.de
+
 config:
   backup: true
   banner: true
@@ -10,4 +14,16 @@ config:
   showdiff: false
   workdir: ~/.config/dotdrop
 dotfiles:
+  f_gitconfig:
+    dst: ~/.gitconfig
+    src: gitconfig
 profiles:
+  common:
+    dotfiles:
+    - f_gitconfig
+  idealo:
+    variables:
+      git_user: Tobias Vollmer
+      git_email: tobias.vollmer@idealo.de
+    include:
+    - common
