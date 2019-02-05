@@ -1,7 +1,3 @@
-variables:
-  git_user: 5nafu
-  git_email: info@tvollmer.de
-
 config:
   backup: true
   banner: true
@@ -17,13 +13,30 @@ dotfiles:
   f_gitconfig:
     dst: ~/.gitconfig
     src: gitconfig
+  f_gpg-agent.conf:
+    dst: ~/.gnupg/gpg-agent.conf
+    src: gnupg/gpg-agent.conf
+  f_gpg.conf:
+    dst: ~/.gnupg/gpg.conf
+    src: gnupg/gpg.conf
+    actions:
+    - gpg-key-import
 profiles:
   common:
     dotfiles:
     - f_gitconfig
+    - f_gpg-agent.conf
+    - f_gpg.conf
   idealo:
-    variables:
-      git_user: Tobias Vollmer
-      git_email: tobias.vollmer@idealo.de
+    dotfiles: []
     include:
     - common
+    variables:
+      git_email: tobias.vollmer@idealo.de
+      git_user: Tobias Vollmer
+variables:
+  git_email: info@tvollmer.de
+  git_user: 5nafu
+actions:
+  gpg-key-import: gpg  --keyserver https://key.tvollmer.de --recv-keys 0xd5fd9e5580e5e506
+
