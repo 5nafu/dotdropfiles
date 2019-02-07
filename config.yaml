@@ -1,6 +1,7 @@
 actions:
   post:
     gpg-key-import: gpg  --keyserver https://key.tvollmer.de --recv-keys 0xd5fd9e5580e5e506
+    gpg-card-import: read -p "insert your yubikey and press enter" ready && gpg --card-status
     chmod_gnupg: chmod 700 ~/.gnupg
     chmod_ssh: chmod 700 ~/.ssh
 config:
@@ -82,6 +83,7 @@ dotfiles:
     actions:
       - chmod_gnupg
       - gpg-key-import
+      - gpg-card-import
     dst: ~/.gnupg/gpg.conf
     src: gnupg/gpg.conf
   f_ssh_config:
