@@ -1,12 +1,12 @@
 #!/bin/bash
-
-TARGETDIR=${1:"$HOME/git/dotdropfiles"}
+set -x 
+TARGETDIR=${1:-$HOME/git/dotdropfiles}
 REPOSITORY=5nafu/dotdropfiles
 
 if [[ "$OSTYPE" =~ ^darwin ]] ; then 
     echo "WARNING: Install of dependencies not implemented."
     echo "Continuing"
-elif type lsb_release &>/dev/null && [[ $(lsb_release -s -c) =~ (Debian|Ubuntu) ]] ; then
+elif type lsb_release &>/dev/null && [[ $(lsb_release -s -i) =~ (Debian|Ubuntu) ]] ; then
     if curl -o requirements.apt https://raw.githubusercontent.com/$REPOSITORY/master/requirements.apt; then
 	curl -o aptfile https://raw.githubusercontent.com/seatgeek/bash-aptfile/master/bin/aptfile
 	chmod +x aptfile
