@@ -1,0 +1,73 @@
+#!/bin/bash
+#set -x
+
+EXTENSION=${1%\?*}
+if [[ -z "$EXTENSION" ]]; then
+    cat <<HELP
+$(basename $0) <URL>
+Automatically Install Extension from URL to Firefox
+HELP
+exit 0
+fi
+
+NAME=$(basename $EXTENSION .xpi)
+TEMPDIR=$(mktemp -d)
+OLDPWD=$(pwd)
+EXTDIR=~/.mozilla/extensions/
+EXTDIR=/usr/lib/firefox-addons/extensions/
+cd $TEMPDIR
+
+cleanup() {
+    cd $OLDPWD
+    rm -fr "$TEMPDIR"
+}
+trap cleanup 0
+
+error() {
+  local parent_lineno="$1"
+  local message="$2"
+  local code="${3:-1}"
+  if [[ -n "$message" ]] ; then
+    echo "Error on or near line ${parent_lineno}: ${message}; exiting with status ${code}"
+  else
+    echo "Error on or near line ${parent_lineno}; exiting with status ${code}"
+  fi
+  exit "${code}"
+}
+trap 'error ${LINENO}' ERR
+
+
+echo "Downloading Firefox Add-on $NAME"
+wget -qO "${NAME}.xpi" "$EXTENSION"
+
+if ! file ${NAME}.xpi | grep -q "Zip archive data"; then
+    error ${LINENO} "${NAME}.xpi does not look like an Zip Archive" 2
+fi
+
+# Getting ID from install.rdf
+ID=$(unzip -p ${NAME}.xpi install.rdf |sed -nr 's#.*id>(.*)</(em:)*id.*#\1#p'|head -1)
+
+# Try again from mainfest.json
+if [[ -z "$ID" ]]; then
+    ID=$(unzip -p ${NAME}.xpi manifest.json |jq -r ".applications.gecko.id" )
+fi
+
+if [[ -z "$ID" ]]; then
+    error ${LINENO} "Could not extract add-on ID. Is this an add-on file?" 3
+fi
+
+#unzip -q ${NAME}.xpi -d $ID
+ID=${ID}.xpi
+mv ${NAME}.xpi $ID
+
+if [[ -e ${EXTDIR}/${ID} ]]; then
+    read -p "Add-on directory exists. overwrite? Y/N" -i N -n 1 -t 10 answer
+    if [[ "${answer,,}" != "y" ]]; then
+        echo "Add-on exists and no overwrite requested. Exiting."
+        exit 0
+    fi
+    rm -r ${EXTDIR}/${ID}
+fi
+echo "Installing $NAME to ${EXTDIR}/${ID}"
+sudo mv ${ID} ${EXTDIR}/${ID}
+

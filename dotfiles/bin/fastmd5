@@ -1,0 +1,30 @@
+#!/bin/bash
+
+size=1M
+
+function usage() {
+    echo "calulates the md5sum of the first and last chunks of data of the given
+    files."
+    echo "If not stated otherwise with '-s', a cunk of '$size' is used."
+    echo "USAGE: $0 [-s <Size to compare>] <file| ...>"
+    exit 0
+}
+
+if [[ "$1" = "-s" ]]; then
+    if [[ $# < 3 ]]; then
+        usage
+    fi
+    echo "Setting Chunksize to '$2'"
+    size=$2
+    shift 2
+fi
+
+[[ $# > 0 ]] || usage
+
+
+for FILE in "$@"; do
+    HSUM=$(head -c $size "$FILE" | md5sum)
+    TSUM=$(tail -c $size "$FILE" | md5sum)
+
+    printf "%s %s *%s\n" ${HSUM%-} ${TSUM%-} "$FILE"
+done

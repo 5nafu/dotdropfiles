@@ -1,0 +1,16 @@
+#! /bin/bash
+
+date=$(date '+%Y%m%d_%H%M%S')
+session="ssh__$date"
+tmux new-session -ds "$session" -y 1024 -x 786
+tmux set-window-option -t "$session:0" remain-on-exit on 
+read
+for file in "$@"; do
+    host=$(basename $file .yaml)
+    echo "ssh $host"
+    tmux split-window -t "$session:0.top-left" "ssh $host"
+    tmux select-layout -t "$session:0" tiled
+    read
+done
+tmux set-window-option -t "$session:0" synchronize-panes on
+#tmux -2 attach-session -t "ssh__$date" 

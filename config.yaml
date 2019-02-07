@@ -1,3 +1,8 @@
+actions:
+  post:
+    gpg-key-import: gpg  --keyserver https://key.tvollmer.de --recv-keys 0xd5fd9e5580e5e506
+    chmod_gnupg: chmod 700 ~/.gnupg
+    chmod_ssh: chmod 700 ~/.ssh
 config:
   backup: true
   banner: true
@@ -6,37 +11,140 @@ config:
   ignoreempty: false
   keepdot: false
   link_by_default: false
-  longkey: false
+  longkey: true
   showdiff: false
   workdir: ~/.config/dotdrop
 dotfiles:
+  d_autostart:
+    dst: ~/.config/autostart
+    src: config/autostart
+  d_bash_it:
+    dst: ~/.bash_it
+    link: true
+    src: bash_it
+  d_bashrc.d:
+    dst: ~/.bashrc.d
+    src: bashrc.d
+  d_bin:
+    dst: ~/bin
+    src: bin
+  d_fonts:
+    dst: ~/.local/share/fonts
+    src: local/share/fonts
+  f_ssh_config_01_global:
+    dst: ~/.ssh/config.d/01_global
+    src: ssh/config.d/01_global
+    actions:
+      - chmod_ssh
+  f_ssh_config_10_idealo:
+    dst: ~/.ssh/config.d/10_idealo
+    src: ssh/config.d/10_idealo
+    actions:
+      - chmod_ssh
+  f_ssh_config_10_tvollmer:
+    dst: ~/.ssh/config.d/10_tvollmer
+    src: ssh/config.d/10_tvollmer
+    actions:
+      - chmod_ssh
+  f_aws_config:
+    dst: ~/.aws/config
+    src: aws/config
+  f_base.cfg:
+    dst: ~/.config/terminology/config/standard/base.cfg
+    src: config/terminology/config/standard/base.cfg
+  f_bash_profile:
+    dst: ~/.bash_profile
+    src: bash_profile
+  f_bashrc:
+    dst: ~/.bashrc
+    src: bashrc
+  f_config:
+    dst: ~/.irssi/config
+    src: irssi/config
+  f_custom-terminalemulator.desktop:
+    dst: ~/.local/share/xfce4/helpers/custom-TerminalEmulator.desktop
+    src: local/share/xfce4/helpers/custom-TerminalEmulator.desktop
+  f_custom-webbrowser.desktop:
+    dst: ~/.local/share/xfce4/helpers/custom-WebBrowser.desktop
+    src: local/share/xfce4/helpers/custom-WebBrowser.desktop
+  f_dir_colors:
+    dst: ~/.dir_colors
+    src: dir_colors
   f_gitconfig:
     dst: ~/.gitconfig
     src: gitconfig
   f_gpg-agent.conf:
     dst: ~/.gnupg/gpg-agent.conf
     src: gnupg/gpg-agent.conf
+    actions:
+      - chmod_gnupg
   f_gpg.conf:
+    actions:
+      - chmod_gnupg
+      - gpg-key-import
     dst: ~/.gnupg/gpg.conf
     src: gnupg/gpg.conf
-    actions:
-    - gpg-key-import
+  f_ssh_config:
+    dst: ~/.ssh/config
+    src: ssh/config
+  f_sshcontrol:
+    dst: ~/.gnupg/sshcontrol
+    src: gnupg/sshcontrol
+  f_syncLocalSettings.json:
+    dst: ~/.config/Code/User/syncLocalSettings.json
+    src: config/Code/User/syncLocalSettings.json
+    trans: gpg
+    trans_write: gpg
+  f_tmux.conf:
+    dst: ~/.tmux.conf
+    src: tmux.conf
+  f_xdefaults:
+    dst: ~/.Xdefaults
+    src: Xdefaults
+  f_xfce4-keyboard-shortcuts.xml:
+    dst: ~/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-keyboard-shortcuts.xml
+    src: config/xfce4/xfconf/xfce-perchannel-xml/xfce4-keyboard-shortcuts.xml
 profiles:
   common:
     dotfiles:
     - f_gitconfig
     - f_gpg-agent.conf
     - f_gpg.conf
+    - f_aws_config
+    - d_bin
+    - d_bash_it
+    - d_bashrc.d
+    - f_bashrc
+    - f_syncLocalSettings.json
+    - f_config
+    - f_bash_profile
+    - f_dir_colors
+    - f_sshcontrol
+    - f_ssh_config
+    - f_ssh_config_01_global
+    - f_ssh_config_10_idealo
+    - f_ssh_config_10_tvollmer
+    - f_tmux.conf
   idealo:
-    dotfiles: []
     include:
     - common
+    - linux
     variables:
       git_email: tobias.vollmer@idealo.de
       git_user: Tobias Vollmer
+  linux:
+    dotfiles:
+    - d_autostart
+    - f_base.cfg
+    - f_xfce4-keyboard-shortcuts.xml
+    - d_fonts
+    - f_custom-terminalemulator.desktop
+    - f_custom-webbrowser.desktop
+    - f_xdefaults
+trans:
+  gpg: gpg -q --for-your-eyes-only --no-tty -d {0} > {1}
+trans_write:
+  gpg: gpg -qaer 0x52A7713373B52FA79A729F64D5FD9E5580E5E506 -o- {0} > {1}
 variables:
   git_email: info@tvollmer.de
   git_user: 5nafu
-actions:
-  gpg-key-import: gpg  --keyserver https://key.tvollmer.de --recv-keys 0xd5fd9e5580e5e506
-

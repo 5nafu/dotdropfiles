@@ -1,0 +1,6 @@
+Compression         yes
+KeepAlive           yes
+ServerAliveInterval 120
+ServerAliveCountMax 5
+ControlMaster auto
+ControlPath /tmp/ssh_mux_%h_%p_%r

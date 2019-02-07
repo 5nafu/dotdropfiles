@@ -1,0 +1,8 @@
+#!/bin/bash
+
+GIT_BASE_DIR=$1
+HOSTFILE=~/.hostlist.txt
+
+
+: >$HOSTFILE
+printf '%s\0' ${GIT_BASE_DIR}/*uppet*/hieradata/hosts/*.yaml |xargs -0 -I{} -n1 basename {} .yaml >>$HOSTFILE

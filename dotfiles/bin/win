@@ -1,0 +1,32 @@
+#!/bin/bash
+
+case "$#" in
+	3)
+		username=$1
+		domain=''
+		password=$2
+		host=$3
+		;;
+	2)
+		username=$1
+		domain=''
+		password='-'
+		host=$2
+		;;
+	1)
+		username=$USER
+		domain='-d ISCOUT'
+		password='-'
+		host=$1
+		;;
+	*)
+		echo "USAGE: $(basename $0) [username] [password] host"
+		echo "       IF A PASSWORD IS PROVIDED, A USERNAME HAS TO BE PROVIDED AS WELL"
+		exit 99
+	;;
+esac
+
+
+
+rdesktop -u $username $domain -p $password -k de -g 1900x1100 -r disk:WIN=$HOME/WIN/ -rclipboard:PRIMARYCLIPBOARD -5 $host
+

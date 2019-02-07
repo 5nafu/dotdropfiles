@@ -1,0 +1,4 @@
+#!/bin/bash
+echo -n "message=foobar&color=random" |POST
+https://hipchat.eu.idealo.com/v2/room/hipchatcli/notification?auth_token=XYZ9e7voBA4D3TLgw7DnvTsm7asdUbYP0EdbAyRF
+

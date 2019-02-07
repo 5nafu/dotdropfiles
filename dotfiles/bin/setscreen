@@ -1,0 +1,16 @@
+#!/bin/bash
+LOG=~/setscreen.log
+
+if [[ "x$1" = "x1" ]] ; then
+    xrandr \
+        --output DP-2-1 --off \
+        --output DP-2-2 --off \
+        --output eDP-1  --auto --primary \
+        --fb 1366x768 
+    exit 0
+fi
+
+xrandr \
+    --output DP-2-1 --auto --pos 0x0 --primary \
+    --output DP-2-2 --auto --pos 1920x0 \
+    --output eDP-1  --auto --pos 3840x0 

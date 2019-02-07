@@ -1,0 +1,15 @@
+#!/bin/bash
+
+host=$1
+
+if ! host $host >/dev/null 2>&1 ; then
+  host=`sed -n "/^Host $host/,/^Host/p" ~/.ssh/config |awk '/Hostname/{print $2}'`
+fi
+
+ssh-keygen -R $host
+
+if [[ ! "$host" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+  ssh-keygen -R $(host $host |sed 's/.* //')
+fi
+
+ssh "$@"

@@ -1,0 +1,7 @@
+Xautolock.corners: -+00
+Xautolock.cornerdelay: 20
+Xautolock.cornerredelay: 20
+Xautolock.time: 5
+Xautolock.locker: i3lock -c 000000 -d
+Xautolock.notifier: notify-send -t 3000 "Screensaver" "Activating screensaver in 20s"
+Xautolock.notify: 20 

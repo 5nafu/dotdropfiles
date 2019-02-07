@@ -1,0 +1,1 @@
+KERNEL=="card0", SUBSYSTEM=="drm", ACTION=="change", ENV{DISPLAY}=":0", ENV{XAUTHORITY}="/home/tobias/.Xauthority", RUN+="/bin/bash /home/tobias/bin/auto-switch-monitor.sh"

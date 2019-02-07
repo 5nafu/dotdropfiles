@@ -1,0 +1,3 @@
+#!/bin/bash
+echo "starting Firefox with /usr/bin/firefox -P default $@" >>/tmp/firefox.log
+/usr/bin/firefox -P default $@

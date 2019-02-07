@@ -1,0 +1,33 @@
+#!/bin/bash
+set -x
+
+SERVER="ldaps://ldap.srv00.inf00.eu.idealo.com:636"
+USER_DN="cn=$USER,ou=users,dc=idealo,dc=de"
+BIND="dc=idealo,dc=de"
+SEARCH_ATTRIBUTE="memberof"
+MEMBER_ATTRIBUTE="uid"
+
+if [[ "$1" = "--UCS" ]]; then
+    SERVER="ldaps://ucs-ldap.srv00.inf05.eu.idealo.com:7636"
+    USER_DN="uid=$USER,cn=users,dc=eu,dc=idealo,dc=com"
+    BIND="dc=eu,dc=idealo,dc=com"
+    SEARCH_ATTRIBUTE="dn"
+    MEMBER_ATTRIBUTE="uniqueMember"
+    shift
+fi
+
+if [ -f ~/.ldappass ]; then
+    PASSOPTION="-y $HOME/.ldappass"
+else
+    PASSOPTION="-W"
+fi
+
+ldapsearch -LLL \
+           -o ldif-wrap=no \
+           -H $SERVER \
+           -b $BIND \
+           -x \
+           -D $USER_DN \
+           $PASSOPTION \
+           $SEARCH_ATTRIBUTE="$1" \
+           $MEMBER_ATTRIBUTE |grep "^$MEMBER_ATTRIBUTE:"; 

@@ -1,0 +1,40 @@
+#!/bin/bash
+
+
+remove=true
+if [[ "x$1" = "x-k" ]]; then
+    remove=false
+    shift
+fi
+
+[[ -f "password" ]] && password="-p$(cat password 2>/dev/null)"
+
+archive="$1"
+extension="${archive##*.}"
+basename="${archive%.*}"
+output="${2:-$basename}"
+success=false
+
+
+case "$extension" in
+    7z)
+        7z x $password -o"$output" -- "$archive" && success=true
+        ;;
+    rar)
+        OWD=$(pwd)
+        mkdir -p "$output" && \
+        cd "$output" && \
+        unrar x $password "$OWD/$archive" && \
+        cd "$OWD" && \
+        success=true
+        ;;
+    *)
+        echo "No handler found for archivetype '$extension'."
+        echo "Can not extract '$archive' to '$output'. Exiting"
+        ;;
+esac
+
+$success && $remove && rm "$archive"
+
+
+

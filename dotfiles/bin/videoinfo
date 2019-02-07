@@ -1,0 +1,7 @@
+#!/bin/bash
+
+video="$1"
+
+filesize=$(ls -sh "$video" |sed 's/\([^ ]*\) .*/\1/')
+metadata=$(exiftool "$video" |grep "^Image Width\|^Image Height\|^Duration" |sort | sed 's/.*: //' | xargs |sed 's/\(.*\) \(.*\) \(.*\)/\3x\2 \1/')
+echo "$metadata $filesize"

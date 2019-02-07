@@ -1,0 +1,15 @@
+#!/bin/bash
+if [ -f ~/.ldappass ]; then
+    PASSOPTION="-y $HOME/.ldappass"
+else
+    PASSOPTION="-W"
+fi
+
+ldapsearch  -LLL \
+           -o ldif-wrap=no \
+           -H ldaps://ldap.srv00.inf00.eu.idealo.com:636 \
+           -b "cn=$1,ou=users,dc=idealo,dc=de" \
+           -x \
+           -D "cn=$USER,ou=users,dc=idealo,dc=de" \
+           $PASSOPTION \
+           IdealoSshPubKey |grep "IdealoSshPubKey"| sed 's/IdealoSshPubKey: //'
