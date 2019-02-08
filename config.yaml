@@ -29,6 +29,9 @@ dotfiles:
   d_bin:
     dst: ~/bin
     src: bin
+  d_config_autorandr:
+    dst: ~/.config/autorandr
+    src: config/autorandr
   d_fonts:
     dst: ~/.local/share/fonts
     src: local/share/fonts
@@ -128,6 +131,8 @@ profiles:
     - f_ssh_config_10_tvollmer
     - f_tmux.conf
   idealo:
+    dotfiles:
+    - d_config_autorandr
     include:
     - common
     - linux
