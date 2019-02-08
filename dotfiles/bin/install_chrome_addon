@@ -1,0 +1,66 @@
+#!/bin/bash
+#set -x
+
+function help {
+        cat <<HELP
+$(basename $0) (-f <FILE>|<ID>)
+Automatically Install Extension from URL to Google Chrome
+With '-f' install all Extensions from the IDlist '<FILE>' (Format:'\$name=\$id\\n')
+HELP
+exit 0
+}
+
+if [[ "$1" = "-f" ]]; then
+  if [[ -f "$2" ]]; then
+    grep -v "^#" $2 | while read extension; do
+      name="${extension%=*}"
+      ext_id="${extension#*=}"
+      echo "installing $name"
+      $0 "$ext_id" "$name"
+    done
+  else
+    help
+  fi
+  exit 0
+fi
+
+
+
+EXTENSION=$1
+NAME=${2:-$EXTENSION}
+if [[ -z "$EXTENSION" ]]; then
+    help
+fi
+
+EXTDIR=/opt/google/chrome/extensions/
+
+error() {
+  local parent_lineno="$1"
+  local message="$2"
+  local code="${3:-1}"
+  if [[ -n "$message" ]] ; then
+    echo "Error on or near line ${parent_lineno}: ${message}; exiting with status ${code}"
+  else
+    echo "Error on or near line ${parent_lineno}; exiting with status ${code}"
+  fi
+  exit "${code}"
+}
+trap 'error ${LINENO}' ERR
+
+
+echo "Adding Chrome Add-on $NAME"
+
+if [[ -e ${EXTDIR}/${EXTENSION}.json ]]; then
+  read -p "Add-on exists. overwrite? y/N" -i N -t 10 answer
+  if [[ "${answer,,}" != "y" ]]; then
+    echo "Add-on exists and no overwrite requested. Exiting."
+    exit 0
+  fi
+  sudo rm -r ${EXTDIR}/${EXTENSION}.json
+fi
+filecontent='{
+  "external_update_url": "https://clients2.google.com/service/update2/crx"
+}'
+sudo sh -c "echo '$filecontent' >> $EXTDIR/${EXTENSION}.json" && echo "Success"
+
+

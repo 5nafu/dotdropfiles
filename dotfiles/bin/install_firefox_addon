@@ -1,13 +1,32 @@
 #!/bin/bash
 #set -x
 
-EXTENSION=${1%\?*}
-if [[ -z "$EXTENSION" ]]; then
-    cat <<HELP
-$(basename $0) <URL>
+function help {
+        cat <<HELP
+$(basename $0) (-f <FILE>|<URL>)
 Automatically Install Extension from URL to Firefox
+With '-f' install all Extensions from the URLlist '<FILE>' ('\\n'-seperated)
 HELP
 exit 0
+}
+
+if [[ "$1" = "-f" ]]; then
+    if [[ -f "$2" ]]; then
+        for url in $(grep -v "^#" $2); do
+	    echo "installing $url"
+	    $0 "$url"
+        done
+    else
+	help
+    fi
+    exit 0
+fi
+
+
+
+EXTENSION=${1%\?*}
+if [[ -z "$EXTENSION" ]]; then
+    help
 fi
 
 NAME=$(basename $EXTENSION .xpi)

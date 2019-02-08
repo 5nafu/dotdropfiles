@@ -47,3 +47,13 @@ if [[ "${INSTALL,,}" -eq "y" ]] || [[ -z "${INSTALL}" ]]; then
     git remote set-url origin git@github.com:$REPOSITORY.git
 fi
 
+read -p "Install Firefox Add-Ons? (Y/n)" -t 10 INSTALL
+if [[ "${INSTALL,,}" -eq "y" ]]; then
+    ./dotfiles/bin/install_firefox_addon -f ff_extensions.lst 
+fi
+
+read -p "Install Chrome Add-Ons? (Y/n)" -t 10 INSTALL
+if [[ "${INSTALL,,}" -eq "y" ]]; then
+    ./dotfiles/bin/install_chrome_addon -f chrome_extensions.lst 
+fi
+
