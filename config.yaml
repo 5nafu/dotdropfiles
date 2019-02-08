@@ -1,9 +1,9 @@
 actions:
   post:
-    gpg-key-import: gpg  --keyserver https://key.tvollmer.de --recv-keys 0xd5fd9e5580e5e506
-    gpg-card-import: read -p "insert your yubikey and press enter" ready && gpg --card-status
     chmod_gnupg: chmod 700 ~/.gnupg
     chmod_ssh: chmod 700 ~/.ssh
+    gpg-card-import: read -p "insert your yubikey and press enter" ready && gpg --card-status
+    gpg-key-import: gpg  --keyserver https://key.tvollmer.de --recv-keys 0xd5fd9e5580e5e506
 config:
   backup: true
   banner: true
@@ -35,21 +35,6 @@ dotfiles:
   d_fonts:
     dst: ~/.local/share/fonts
     src: local/share/fonts
-  f_ssh_config_01_global:
-    dst: ~/.ssh/config.d/01_global
-    src: ssh/config.d/01_global
-    actions:
-      - chmod_ssh
-  f_ssh_config_10_idealo:
-    dst: ~/.ssh/config.d/10_idealo
-    src: ssh/config.d/10_idealo
-    actions:
-      - chmod_ssh
-  f_ssh_config_10_tvollmer:
-    dst: ~/.ssh/config.d/10_tvollmer
-    src: ssh/config.d/10_tvollmer
-    actions:
-      - chmod_ssh
   f_aws_config:
     dst: ~/.aws/config
     src: aws/config
@@ -78,20 +63,35 @@ dotfiles:
     dst: ~/.gitconfig
     src: gitconfig
   f_gpg-agent.conf:
+    actions:
+    - chmod_gnupg
     dst: ~/.gnupg/gpg-agent.conf
     src: gnupg/gpg-agent.conf
-    actions:
-      - chmod_gnupg
   f_gpg.conf:
     actions:
-      - chmod_gnupg
-      - gpg-key-import
-      - gpg-card-import
+    - chmod_gnupg
+    - gpg-key-import
+    - gpg-card-import
     dst: ~/.gnupg/gpg.conf
     src: gnupg/gpg.conf
   f_ssh_config:
     dst: ~/.ssh/config
     src: ssh/config
+  f_ssh_config_01_global:
+    actions:
+    - chmod_ssh
+    dst: ~/.ssh/config.d/01_global
+    src: ssh/config.d/01_global
+  f_ssh_config_10_idealo:
+    actions:
+    - chmod_ssh
+    dst: ~/.ssh/config.d/10_idealo
+    src: ssh/config.d/10_idealo
+  f_ssh_config_10_tvollmer:
+    actions:
+    - chmod_ssh
+    dst: ~/.ssh/config.d/10_tvollmer
+    src: ssh/config.d/10_tvollmer
   f_sshcontrol:
     dst: ~/.gnupg/sshcontrol
     src: gnupg/sshcontrol
