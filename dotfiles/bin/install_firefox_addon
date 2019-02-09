@@ -60,20 +60,25 @@ echo "Downloading Firefox Add-on $NAME"
 wget -qO "${NAME}.xpi" "$EXTENSION"
 
 if ! file ${NAME}.xpi | grep -q "Zip archive data"; then
-    error ${LINENO} "${NAME}.xpi does not look like an Zip Archive" 2
+  error ${LINENO} "${NAME}.xpi does not look like an Zip Archive" 2
 fi
 
-# Getting ID from install.rdf
-ID=$(unzip -p ${NAME}.xpi install.rdf |sed -nr 's#.*id>(.*)</(em:)*id.*#\1#p'|head -1)
+metadatafile=$(unzip -l ${NAME}.xpi  |grep "install.rdf\|manifest.json" | sed 's/.* //')
 
-# Try again from mainfest.json
-if [[ -z "$ID" ]]; then
+case $metadatafile in
+  install.rdf)
+    # Getting ID from install.rdf
+    ID=$(unzip -p ${NAME}.xpi install.rdf |sed -nr 's#.*id>(.*)</(em:)*id.*#\1#p'|head -1)
+    ;;
+  manifest.json)
+    # Getting ID from mainfest.json
     ID=$(unzip -p ${NAME}.xpi manifest.json |jq -r ".applications.gecko.id" )
-fi
-
-if [[ -z "$ID" ]]; then
-    error ${LINENO} "Could not extract add-on ID. Is this an add-on file?" 3
-fi
+    ;;
+  *)
+    error ${LINENO} "Can not discern Extention ID (neither install.rdf not manifest.json found)" 3
+    exit 1
+    ;;
+esac
 
 #unzip -q ${NAME}.xpi -d $ID
 ID=${ID}.xpi
