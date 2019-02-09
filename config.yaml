@@ -3,7 +3,7 @@ actions:
     chmod_gnupg: chmod 700 ~/.gnupg
     chmod_ssh: chmod 700 ~/.ssh
     gpg-card-import: read -p "insert your yubikey and press enter" ready && gpg --card-status
-    gpg-key-import: gpg  --keyserver https://key.tvollmer.de --recv-keys 0xd5fd9e5580e5e506
+    gpg-key-import: gpg  --keyserver https://key.tvollmer.de --recv-keys 0xd5fd9e5580e5e506 && echo "52A7713373B52FA79A729F64D5FD9E5580E5E506:6:" | gpg --import-ownertrust
 config:
   backup: false
   banner: true
