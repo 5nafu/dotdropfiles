@@ -50,6 +50,8 @@ dotfiles:
   f_config:
     dst: ~/.irssi/config
     src: irssi/config
+    trans: gpg
+    trans_write: gpg
   f_custom-terminalemulator.desktop:
     dst: ~/.local/share/xfce4/helpers/custom-TerminalEmulator.desktop
     src: local/share/xfce4/helpers/custom-TerminalEmulator.desktop
