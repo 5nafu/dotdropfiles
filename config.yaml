@@ -5,7 +5,7 @@ actions:
     gpg-card-import: read -p "insert your yubikey and press enter" ready && gpg --card-status
     gpg-key-import: gpg  --keyserver https://key.tvollmer.de --recv-keys 0xd5fd9e5580e5e506
 config:
-  backup: true
+  backup: false
   banner: true
   create: true
   dotpath: dotfiles
