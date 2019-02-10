@@ -53,7 +53,8 @@ sudo -H pip3 install -r dotdrop/requirements.txt
   
 read -p "Install dotfiles? (y/N)" -t 10 INSTALL
 if [[ "${INSTALL,,}" = "y" ]]; then
-    ./dotdrop.sh install --cfg=$TARGETDIR/config.yaml
+    read -p "which profile should be installed: " -i $(hostname -s) -t 10 DOTFILE_PROFILE
+    ./dotdrop.sh install --cfg=$TARGETDIR/config.yaml -p $DOTFILE_PROFILE
 fi
 
 read -p "Reset remote of dotfiles repository to ssh? (Y/n)" -t 10 RESET_REPO
