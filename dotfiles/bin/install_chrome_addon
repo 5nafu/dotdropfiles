@@ -33,6 +33,8 @@ if [[ -z "$EXTENSION" ]]; then
 fi
 
 EXTDIR=/opt/google/chrome/extensions/
+[[ ! -e $EXTDIR ]] && sudo mkdir -p $EXTDIR
+
 
 error() {
   local parent_lineno="$1"
