@@ -79,6 +79,8 @@ dotfiles:
     dst: ~/.gnupg/gpg.conf
     src: gnupg/gpg.conf
   f_ssh_config:
+    actions:
+    - chmod_ssh
     dst: ~/.ssh/config
     src: ssh/config
   f_ssh_config_01_global:
@@ -91,12 +93,18 @@ dotfiles:
     - chmod_ssh
     dst: ~/.ssh/config.d/10_idealo
     src: ssh/config.d/10_idealo
+    trans: gpg
+    trans_write: gpg
   f_ssh_config_10_tvollmer:
     actions:
     - chmod_ssh
     dst: ~/.ssh/config.d/10_tvollmer
     src: ssh/config.d/10_tvollmer
+    trans: gpg
+    trans_write: gpg
   f_sshcontrol:
+    actions:
+    - chmod_ssh
     dst: ~/.gnupg/sshcontrol
     src: gnupg/sshcontrol
   f_syncLocalSettings.json:
