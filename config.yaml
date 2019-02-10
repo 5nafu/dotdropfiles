@@ -49,7 +49,7 @@ dotfiles:
   f_bashrc:
     dst: ~/.bashrc
     src: bashrc
-  f_config:
+  f_irssi_config:
     dst: ~/.irssi/config
     src: irssi/config
     trans: gpg
@@ -135,7 +135,7 @@ profiles:
     - d_bashrc.d
     - f_bashrc
     - f_syncLocalSettings.json
-    - f_config
+    - f_irssi_config
     - f_bash_profile
     - f_dir_colors
     - f_sshcontrol
