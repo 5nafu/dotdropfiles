@@ -1,14 +1,25 @@
 #!/bin/bash
-set -x 
+# set -x 
+
 TARGETDIR=${1:-$HOME/git/dotdropfiles}
 REPOSITORY=5nafu/dotdropfiles
+if type curl >/dev/null 2>&1; then
+    dl_cmd="curl"
+    dl_options="-so"
+elif type wget >/dev/null 2>&1; then
+    dl_cmd="wget"
+    dl_options="-qO"
+else
+    echo "Neither curl nor wget found. Exiting"
+    exit 1
+fi
 
 if [[ "$OSTYPE" =~ ^darwin ]] ; then 
     echo "WARNING: Install of dependencies not implemented."
     echo "Continuing"
 elif type lsb_release &>/dev/null && [[ $(lsb_release -s -i) =~ (Debian|Ubuntu) ]] ; then
-    if curl -o requirements.apt https://raw.githubusercontent.com/$REPOSITORY/master/requirements.apt; then
-	curl -o aptfile https://raw.githubusercontent.com/seatgeek/bash-aptfile/master/bin/aptfile
+    if $dl_cmd $dl_options requirements.apt https://raw.githubusercontent.com/$REPOSITORY/master/requirements.apt; then
+	$dl_cmd $dl_options aptfile https://raw.githubusercontent.com/seatgeek/bash-aptfile/master/bin/aptfile
 	chmod +x aptfile
 
 	sudo ./aptfile requirements.apt
