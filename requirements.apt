@@ -2,9 +2,17 @@
 
 log_info "Installing Repositories"
 lsb_id=$(lsb_release -si)
+
+apt-key adv --recv-key 0xEB4C1BFD4F042F6DDDCCEC917721F63BD38B4796
 repository "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main"
+
+apt-key adv --recv-key 0xDBA36B5181D0C816F630E889D980A17457F6FB06
 repository "deb [arch=amd64] https://updates.signal.org/desktop/apt xenial main"
+
+apt-key adv --recv-key 0xBC528686B50D79E339D3721CEB3E94ADBE1229CF
 repository "deb [arch=amd64] http://packages.microsoft.com/repos/vscode stable main"
+
+apt-key adv --recv-key 0x9DC858229FC7DD38854AE2D88D81803C0EBFCD88
 repository "deb [arch=amd64] https://download.docker.com/linux/${lsb_id,,} $(lsb_release -sc) stable"
 
 log_info "Updating"
