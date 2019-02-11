@@ -1,0 +1,1 @@
+../completion/available/pip.completion.bash

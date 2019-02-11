@@ -1,0 +1,1 @@
+../completion/available/vagrant.completion.bash

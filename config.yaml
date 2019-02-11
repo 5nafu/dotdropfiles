@@ -25,6 +25,9 @@ dotfiles:
     dst: ~/.bash_it
     link: true
     src: bash_it
+  d_bash_it_enabled:
+    dst: ~/.bash_it/enabled
+    src: bash_it_enabled
   d_bashrc.d:
     dst: ~/.bashrc.d
     src: bashrc.d
@@ -166,6 +169,7 @@ profiles:
     - f_custom-webbrowser.desktop
     - f_xdefaults
     - f_config_xfce4_helpers.rc
+    - d_bash_it_enabled
 trans:
   gpg: gpg -q --for-your-eyes-only --no-tty -d {0} > {1}
 trans_write:

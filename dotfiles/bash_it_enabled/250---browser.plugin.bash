@@ -1,0 +1,1 @@
+../plugins/available/browser.plugin.bash
