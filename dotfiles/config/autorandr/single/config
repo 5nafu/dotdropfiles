@@ -7,7 +7,7 @@ off
 output HDMI-2
 off
 output eDP-1
-mode 1366x768
+mode 1920x1080
 pos 0x0
 primary
-rate 60.00
+rate 60.03
