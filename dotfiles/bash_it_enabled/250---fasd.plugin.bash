@@ -1,1 +1,1 @@
-../plugins/available/fasd.plugin.bash
+/home/tobias.vollmer/.bash_it/plugins/available/fasd.plugin.bash

@@ -1,1 +1,1 @@
-../plugins/available/tmux.plugin.bash
+/home/tobias.vollmer/.bash_it/plugins/available/tmux.plugin.bash

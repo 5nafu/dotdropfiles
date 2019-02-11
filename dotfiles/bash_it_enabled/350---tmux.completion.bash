@@ -1,1 +1,1 @@
-../completion/available/tmux.completion.bash
+/home/tobias.vollmer/.bash_it/completion/available/tmux.completion.bash

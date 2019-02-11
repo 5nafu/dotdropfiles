@@ -1,1 +1,1 @@
-../aliases/available/tmux.aliases.bash
+/home/tobias.vollmer/.bash_it/aliases/available/tmux.aliases.bash

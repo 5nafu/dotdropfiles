@@ -1,1 +1,1 @@
-../completion/available/virsh.completion.bash
+/home/tobias.vollmer/.bash_it/completion/available/virsh.completion.bash

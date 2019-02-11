@@ -1,1 +1,1 @@
-../completion/available/docker.completion.bash
+/home/tobias.vollmer/.bash_it/completion/available/docker.completion.bash

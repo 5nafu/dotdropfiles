@@ -1,1 +1,1 @@
-../completion/available/ssh.completion.bash
+/home/tobias.vollmer/.bash_it/completion/available/ssh.completion.bash

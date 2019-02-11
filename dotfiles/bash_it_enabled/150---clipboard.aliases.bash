@@ -1,1 +1,1 @@
-../aliases/available/clipboard.aliases.bash
+/home/tobias.vollmer/.bash_it/aliases/available/clipboard.aliases.bash

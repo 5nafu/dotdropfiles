@@ -1,1 +1,1 @@
-../aliases/available/general.aliases.bash
+/home/tobias.vollmer/.bash_it/aliases/available/general.aliases.bash

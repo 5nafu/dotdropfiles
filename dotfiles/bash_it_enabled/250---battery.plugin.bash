@@ -1,1 +1,1 @@
-../plugins/available/battery.plugin.bash
+/home/tobias.vollmer/.bash_it/plugins/available/battery.plugin.bash

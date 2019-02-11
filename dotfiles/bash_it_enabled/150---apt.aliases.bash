@@ -1,1 +1,1 @@
-../aliases/available/apt.aliases.bash
+/home/tobias.vollmer/.bash_it/aliases/available/apt.aliases.bash

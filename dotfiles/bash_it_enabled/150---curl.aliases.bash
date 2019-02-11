@@ -1,1 +1,1 @@
-../aliases/available/curl.aliases.bash
+/home/tobias.vollmer/.bash_it/aliases/available/curl.aliases.bash

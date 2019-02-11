@@ -1,1 +1,1 @@
-../aliases/available/git.aliases.bash
+/home/tobias.vollmer/.bash_it/aliases/available/git.aliases.bash

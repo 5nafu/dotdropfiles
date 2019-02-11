@@ -1,1 +1,1 @@
-../aliases/available/systemd.aliases.bash
+/home/tobias.vollmer/.bash_it/aliases/available/systemd.aliases.bash

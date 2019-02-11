@@ -1,1 +1,1 @@
-../plugins/available/docker-compose.plugin.bash
+/home/tobias.vollmer/.bash_it/plugins/available/docker-compose.plugin.bash

@@ -1,1 +1,1 @@
-../completion/available/defaults.completion.bash
+/home/tobias.vollmer/.bash_it/completion/available/defaults.completion.bash
