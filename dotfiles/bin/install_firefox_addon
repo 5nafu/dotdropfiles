@@ -72,7 +72,7 @@ case $metadatafile in
     ;;
   manifest.json)
     # Getting ID from mainfest.json
-    ID=$(unzip -p ${NAME}.xpi manifest.json |jq -r ".applications.gecko.id" )
+    ID=$(unzip -p ${NAME}.xpi manifest.json |jq -r "..|.gecko?.id? |select(. != null)" )
     ;;
   *)
     error ${LINENO} "Can not discern Extention ID (neither install.rdf not manifest.json found)" 3
@@ -86,6 +86,7 @@ mv ${NAME}.xpi $ID
 
 if [[ -e ${EXTDIR}/${ID} ]]; then
     read -p "Add-on directory exists. overwrite? Y/N" -i N -n 1 -t 10 answer
+    echo ""
     if [[ "${answer,,}" != "y" ]]; then
         echo "Add-on exists and no overwrite requested. Exiting."
         exit 0
