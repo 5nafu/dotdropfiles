@@ -42,6 +42,7 @@
   uff = !sh -c 'git rup && git ffm'
   sur = submodule update --remote
   curbranch = rev-parse --symbolic-full-name --abbrev-ref HEAD
+  bbp =  !sh -c 'git push origin $(git curbranch) 2>&1'
   bbpush = !sh -c 'git push origin $(git curbranch) 2>&1 |grep -o "https://.*" |xargs -r xdg-open'
   bbpp = !sh -c 'echo "Pull" && git pull origin master && echo "Push" && git bbpush'
   #oldbranches = !sh -c 'git branch -r --merged | grep -v "HEAD\|master" |xargs -l1 git log -1 --format="%ci %cr %an %D" |sed "s#origin/##" |sort -r'

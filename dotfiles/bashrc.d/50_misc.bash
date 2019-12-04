@@ -20,6 +20,7 @@ export ANSIBLE_NOCOWS=1
 
 # Alias vor activating Virtualenv
 alias venv='if [[ -d venv ]] ;  then  source ./venv/bin/activate; else virtualenv venv && source ./venv/bin/activate; fi'
+alias venv3='if [[ -d venv ]] ;  then  source ./venv/bin/activate; else virtualenv -p python3 venv && source ./venv/bin/activate; fi'
 
 # Alias to go to top of git project
 alias gtop='cd $(git rev-parse --show-toplevel)'

@@ -13,17 +13,18 @@ config:
   dotpath: dotfiles
   ignoreempty: false
   keepdot: false
-  link_by_default: false
   longkey: true
   showdiff: false
   workdir: ~/.config/dotdrop
+  link_on_import: nolink
+  minversion: 0.29.5
 dotfiles:
   d_autostart:
     dst: ~/.config/autostart
     src: config/autostart
   d_bash_it:
     dst: ~/.bash_it
-    link: true
+    link: link
     src: bash_it
   d_bash_it_enabled:
     dst: ~/.bash_it/enabled
@@ -82,7 +83,7 @@ dotfiles:
   f_irssi_config:
     dst: ~/.irssi/config
     src: irssi/config
-    trans: gpg
+    trans_read: gpg
     trans_write: gpg
   f_ssh_config:
     actions:
@@ -99,14 +100,14 @@ dotfiles:
     - chmod_ssh
     dst: ~/.ssh/config.d/10_idealo
     src: ssh/config.d/10_idealo
-    trans: gpg
+    trans_read: gpg
     trans_write: gpg
   f_ssh_config_10_tvollmer:
     actions:
     - chmod_ssh
     dst: ~/.ssh/config.d/10_tvollmer
     src: ssh/config.d/10_tvollmer
-    trans: gpg
+    trans_read: gpg
     trans_write: gpg
   f_sshcontrol:
     actions:
@@ -118,7 +119,7 @@ dotfiles:
     - code_install_sync
     dst: ~/.config/Code/User/syncLocalSettings.json
     src: config/Code/User/syncLocalSettings.json
-    trans: gpg
+    trans_read: gpg
     trans_write: gpg
   f_tmux.conf:
     dst: ~/.tmux.conf
@@ -170,10 +171,10 @@ profiles:
     - f_xdefaults
     - f_config_xfce4_helpers.rc
     - d_bash_it_enabled
-trans:
-  gpg: gpg -q --for-your-eyes-only --no-tty -d {0} > {1}
 trans_write:
   gpg: gpg -qaer 0x52A7713373B52FA79A729F64D5FD9E5580E5E506 -o- {0} > {1}
 variables:
   git_email: info@tvollmer.de
   git_user: 5nafu
+trans_read:
+  gpg: gpg -q --for-your-eyes-only --no-tty -d {0} > {1}

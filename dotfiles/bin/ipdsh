@@ -1,0 +1,143 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+import pymysql.cursors
+import argparse
+import subprocess
+import sys
+import os
+import re
+
+
+os.putenv("PDSH_SSH_ARGS", "-q -o BatchMode=yes -o LogLevel=QUIET\
+          -oStrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null")
+os.putenv("PDSH_RCMD_TYPE", "ssh")
+
+pars = argparse.ArgumentParser()
+pars.add_argument('target', type=str,
+                  help='expression which hosts should be targeted. allows'
+                  ' * and ? wildcards. It\'s also possible to target puppet'
+                  ' roles.')
+pars.add_argument('-r', '--regexp', action='store_true',
+                  help='enable full regexp syntax')
+pars.add_argument('-c', '--cmd', type=str, help='command to run')
+pars.add_argument('-l', '--list', action='store_true',
+                  help='only list matching hosts (do not execute)')
+pars.add_argument('-a', '--ask', action='store_true',
+                  help='ask for confirmation')
+pars.add_argument('-N', '--no_hostname', action='store_true',
+                  help='supresses printing the hostname in output')
+pars.add_argument('-R', '--with_role', action='store_true',
+                  help='Also search in puppet roles')
+args = pars.parse_args()
+
+
+def get_hostlist_from_cmdb(target, operator, role):
+    db = pymysql.connect(host="internal-tools.db00.pro00.eu.idealo.com",
+                         user="readonly", passwd="readonly", db="STAKO")
+    cur = db.cursor()
+    if role:
+        statement = "SELECT DISTINCT Hostname FROM Hosts WHERE " \
+                    "(Hostname {0} %s OR PuppetRolle {0} %s) AND " \
+                    "Status = 'active'".format(operator)
+        result = cur.execute(statement, (target, target))
+    else:
+        statement = "SELECT DISTINCT Hostname FROM Hosts WHERE "\
+                    "(Hostname {0} %s) AND "\
+                    "Status = 'active'".format(operator)
+        result = cur.execute(statement, target)
+    if result == 0:
+        return None
+    else:
+        hosts = cur.fetchall()
+        hosts = [element for tupl in hosts for element in tupl]
+        return hosts
+
+
+def execute(cmd):
+    popen = subprocess.Popen(args=cmd, shell=True, stdout=subprocess.PIPE,
+                             stderr=subprocess.STDOUT, universal_newlines=True)
+    for stdout_line in iter(popen.stdout.readline, ""):
+        yield stdout_line
+    popen.stdout.close()
+
+
+def run_or_not(cmd):
+    ask = args.ask
+    if not ask:
+        return True
+    else:
+        go = input("Do you want to run '{}' on these hosts? Y/n: ".format(cmd))
+        if re.match("[Yyj]", go) or go == "":
+            return True
+        else:
+            return False
+
+
+def process_target_str(is_regexp, target):
+    operator = 'REGEXP'
+    if not is_regexp:
+        if "*" in target or "?" in target:
+            target = target.replace('*', '%')
+            target = target.replace('?', '_')
+            operator = 'LIKE'
+        else:
+            operator = "="
+
+    return target, operator
+
+
+def run_cmd_on_hostlist(hosts, list_only, cmd):
+        interactive = args.ask
+        if interactive or list_only:
+            if not list_only:
+                print("Matching hosts:")
+            print("\n".join(hosts))
+
+            if list_only:
+                sys.exit()
+
+        if not cmd:
+            print("\n".join(hosts))
+            print("No command to run. Use -c to specify command.")
+        else:
+            if run_or_not(cmd):
+                hostlist = ",".join(hosts)
+                pdshcommand = pdsh_command(cmd, hostlist)
+                for line in execute(pdshcommand):
+                    print(line, end="")
+            else:
+                pass
+
+
+def pdsh_command(cmd, hostlist):
+    if args.no_hostname:
+        suppress = "-N"
+    else:
+        suppress = ""
+
+    pdshcommand = 'pdsh {} -w {} "{}"'.format(suppress, hostlist, cmd)
+    return pdshcommand
+
+
+def main():
+    list_only = args.list
+    target = args.target
+    cmd = args.cmd
+    role = args.with_role
+
+    if list_only:
+        target += "*"
+
+    target_expr, operator = process_target_str(args.regexp, target)
+    hosts = get_hostlist_from_cmdb(target_expr, operator, role)
+
+    if hosts is None:
+        if not list_only:
+            print("No hosts matching '{}' found!".format(target))
+    else:
+        run_cmd_on_hostlist(hosts, list_only, cmd)
+
+
+if __name__ == '__main__':
+    main()

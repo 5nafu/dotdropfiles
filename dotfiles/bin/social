@@ -1,0 +1,3 @@
+#!/bin/bash
+
+chromium-browser --user-data-dir=$HOME/communication_chromium/
