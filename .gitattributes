@@ -1,3 +1,4 @@
 dotfiles/bin/oc filter=lfs diff=lfs merge=lfs -text
 dotfiles/bin/bw filter=lfs diff=lfs merge=lfs -text
 dotfiles/bin/terraform filter=lfs diff=lfs merge=lfs -text
+dotfiles/bin/terraform filter=lfs diff=lfs merge=lfs -text
