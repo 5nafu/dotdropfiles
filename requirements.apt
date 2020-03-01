@@ -27,7 +27,7 @@ retry 3 timeout 10 apt-key adv --keyserver ipv4.pool.sks-keyservers.net --recv-k
 repository "deb [arch=amd64] http://packages.microsoft.com/repos/vscode stable main"
 
 retry 3 add-key-from-url-with-timeout 10 https://download.opensuse.org/repositories/devel:kubic:libcontainers:stable/xUbuntu_$(lsb_release -sr)/Release.key
-repository "deb http://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/testing/xUbuntu_$(lsb_release -sr)/ /"
+repository "deb http://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_$(lsb_release -sr)/ /"
 
 #https://packagecloud.io/github/git-lfs/gpgkey
 retry 3 timeout 10 apt-key adv --keyserver ipv4.pool.sks-keyservers.net --recv-key 0x6D398DBD30DD78941E2C4797FE2A5F8BDC282033
