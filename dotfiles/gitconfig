@@ -46,6 +46,7 @@
   bbpush = !sh -c 'git push origin $(git curbranch) 2>&1 |grep -o "https://.*" |xargs -r xdg-open'
   bbpp = !sh -c 'echo "Pull" && git pull origin master && echo "Push" && git bbpush'
   #oldbranches = !sh -c 'git branch -r --merged | grep -v "HEAD\|master" |xargs -l1 git log -1 --format="%ci %cr %an %D" |sed "s#origin/##" |sort -r'
+  iclone = "!f() { cd /home/tobias.vollmer/git; [[ -d $2 ]] && cd $2 || git clone ssh://git@code.eu.idealo.com:7999/$1/$2.git; }; f"
 [push]
       default = matching
 [branch "master"]
@@ -80,3 +81,8 @@
   browser = firefox
 [help]
   autocorrect = 1
+[filter "lfs"]
+  clean = git-lfs clean -- %f
+  smudge = git-lfs smudge -- %f
+  process = git-lfs filter-process
+  required = true
