@@ -55,6 +55,10 @@ read -p "Install dotfiles? (y/N)" -t 10 INSTALL
 if [[ "${INSTALL,,}" = "y" ]]; then
     read -p "which profile should be installed: " -i $(hostname -s) -t 10 DOTFILE_PROFILE
     ./dotdrop.sh install --cfg=$TARGETDIR/config.yaml -p $DOTFILE_PROFILE
+    LOCALBASHRC=~/.bashrc.local
+    grep -q "^export DOTDROP_PROFILE=" $LOCALBASHRC 2>/dev/null \
+        && sed -i "s/^export DOTDROP_PROFILE=.*$/export DOTDROP_PROFILE=$DOTFILE_PROFILE/" $LOCALBASHRC \
+        || echo "export DOTDROP_PROFILE=$DOTFILE_PROFILE" >>$LOCALBASHRC
 fi
 
 read -p "Reset remote of dotfiles repository to ssh? (Y/n)" -t 10 RESET_REPO
