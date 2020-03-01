@@ -33,6 +33,9 @@ repository "deb http://download.opensuse.org/repositories/devel:/kubic:/libconta
 retry 3 timeout 10 apt-key adv --keyserver ipv4.pool.sks-keyservers.net --recv-key 0x6D398DBD30DD78941E2C4797FE2A5F8BDC282033
 repository "deb https://packagecloud.io/github/git-lfs/${lsb_id,,}/ $(lsb_release -sc) main"
 
+# For mkusb
+ppa mkusb/ppa
+
 log_info "Updating"
 update
 
