@@ -62,4 +62,3 @@ export BASH_IT_CUSTOM=$HOME/.bashrc.d
 
 # Load Bash It
 source "$BASH_IT"/bash_it.sh
-
