@@ -46,6 +46,10 @@ alias dsstore="find . -name '*.DS_Store' -type f -ls -delete"
 # Aliasing eachdir like this allows you to use aliases/functions as commands.
 alias eachdir=". eachdir"
 
+# Allow GET tu work on broken SSL
+alias GET="PERL_LWP_SSL_VERIFY_HOSTNAME=0 /usr/bin/GET"
+
+
 # Create a new directory and enter it
 function md() {
   mkdir -p "$@" && cd "$@"
@@ -58,3 +62,15 @@ alias gs-all='eachdir git status'
 
 # Add bin directory
 export PATH="$HOME/bin:$PATH"
+
+# create colorized box for given strings
+function box_out() {
+    local s="$*"
+    color_border=1
+    color_text=2
+    tput setaf $color_border
+    echo "##${s//?/\#}##
+# $(tput setaf $color_text)$s$(tput setaf $color_border) #
+##${s//?/\#}##"
+    tput sgr 0
+}
