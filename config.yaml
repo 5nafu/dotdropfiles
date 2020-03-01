@@ -161,6 +161,10 @@ profiles:
       git_email: tobias.vollmer@idealo.de
       git_user: Tobias Vollmer
       MailReader: evolution
+  andor:
+    include:
+    - common
+    - linux
   linux:
     dotfiles:
     - d_autostart
