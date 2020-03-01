@@ -26,6 +26,10 @@ dotfiles:
     dst: ~/.bash_it
     link: link
     src: bash_it
+  d_kubectx:
+    dst: ~/.kubectx
+    link: link
+    src: kubectx
   d_bash_it_enabled:
     dst: ~/.bash_it/enabled
     src: bash_it_enabled
@@ -139,6 +143,7 @@ profiles:
     - f_aws_config
     - d_bin
     - d_bash_it
+    - d_kubectx
     - d_bashrc.d
     - f_bashrc
     - f_syncLocalSettings.json
