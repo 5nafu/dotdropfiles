@@ -134,6 +134,11 @@ dotfiles:
   f_xfce4-keyboard-shortcuts.xml:
     dst: ~/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-keyboard-shortcuts.xml
     src: config/xfce4/xfconf/xfce-perchannel-xml/xfce4-keyboard-shortcuts.xml
+  f_kube_config:
+    dst: ~/.kube/config
+    src: kube/config
+    trans_read: gpg
+    trans_write: gpg
 profiles:
   common:
     dotfiles:
@@ -159,6 +164,7 @@ profiles:
   idealo:
     dotfiles:
     - d_config_autorandr
+    - f_kube_config
     include:
     - common
     - linux
