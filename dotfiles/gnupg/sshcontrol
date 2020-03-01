@@ -8,4 +8,4 @@
 # keygrip of the key given as 40 hex digits, optionally followed by a
 # caching TTL in seconds, and another optional field for arbitrary
 # flags.   Prepend the keygrip with an '!' mark to disable it.
-E04C512C6BA0E4ADCA7E993B7E6B57B95BA0B50D
+3878A7E2CB84283ABC385DDE8DB02BEF63CEAEF7
