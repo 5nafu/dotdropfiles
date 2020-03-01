@@ -23,6 +23,10 @@ repository "deb [arch=amd64] http://packages.microsoft.com/repos/vscode stable m
 retry 3 timeout 10 apt-key adv --keyserver ipv4.pool.sks-keyservers.net --recv-key 0x9DC858229FC7DD38854AE2D88D81803C0EBFCD88
 repository "deb [arch=amd64] https://download.docker.com/linux/${lsb_id,,} $(lsb_release -sc) stable"
 
+#https://packagecloud.io/github/git-lfs/gpgkey
+retry 3 timeout 10 apt-key adv --keyserver ipv4.pool.sks-keyservers.net --recv-key 0x6D398DBD30DD78941E2C4797FE2A5F8BDC282033
+repository "deb https://packagecloud.io/github/git-lfs/${lsb_id,,}/ $(lsb_release -sc) main
+
 log_info "Updating"
 update
 
