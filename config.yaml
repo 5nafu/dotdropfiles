@@ -160,6 +160,7 @@ profiles:
     variables:
       git_email: tobias.vollmer@idealo.de
       git_user: Tobias Vollmer
+      MailReader: evolution
   linux:
     dotfiles:
     - d_autostart
@@ -176,5 +177,6 @@ trans_write:
 variables:
   git_email: info@tvollmer.de
   git_user: 5nafu
+  MailReader: thunderbird
 trans_read:
   gpg: gpg -q --for-your-eyes-only --no-tty -d {0} > {1}
