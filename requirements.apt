@@ -24,7 +24,7 @@ function package_from_url {
   tempdir=$(mktemp -d)
   wget -O $tempdir/${name}.deb $url \
     && apt install -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" -qq -y --force-yes "$tempdir/${name}.deb"
-  if [[ $? -eq 0 ]]; then 
+  if [[ $? -ne 0 ]]; then 
     rm -r $tempdir
     log_fail "${APTFILE_RED}[FAIL]${APTFILE_COLOR_OFF} package $name"
   fi
