@@ -17,6 +17,17 @@ function add-key-from-url-with-timeout {
   timeout $timeout bash -c "wget -qO- \"$url\" | apt-key add -"
 }
 
+function package_from_url {
+  name=$1
+  url=$2
+  dpkg --force-confnew -s "$name" > "$TMP_APTFILE_LOGFILE" 2>&1 && log_info "${APTFILE_CYAN}[OK]${APTFILE_COLOR_OFF} package $name" && return 0
+  tempdir=$(mktemp -d)
+  wget -O $tempdir/${name}.deb $url \
+    && apt install -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" -qq -y --force-yes "$tempdir/${name}.deb"
+  [[ $? -eq 0 ]] || log_fail "${APTFILE_RED}[FAIL]${APTFILE_COLOR_OFF} package $pkg"
+  log_info "${APTFILE_GREEN}[NEW]${APTFILE_COLOR_OFF} package $pkg"
+}
+
 retry 3 timeout 5 apt-key adv --keyserver keyserver.ubuntu.com --recv-key 0xEB4C1BFD4F042F6DDDCCEC917721F63BD38B4796
 repository "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main"
 
@@ -175,8 +186,9 @@ package "wireshark-qt"
 package "wireshark"
 package "xautolock"
 package "xfce4-goodies"
-package "xnview"
 package "xsane"
 package "xsensors"
 package "xtightvncviewer"
 package "yamllint"
+
+package_from_url "xnview" "https://download.xnview.com/XnViewMP-linux-x64.deb"
