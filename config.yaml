@@ -186,7 +186,6 @@ profiles:
     - f_custom-webbrowser.desktop
     - f_xdefaults
     - f_config_xfce4_helpers.rc
-    - d_bash_it_enabled
 trans_write:
   gpg: gpg -qaer 0x16142EF211C6D2340A0B08F0CD7583FE6D62D2A9 -o- {0} > {1}
 variables:
