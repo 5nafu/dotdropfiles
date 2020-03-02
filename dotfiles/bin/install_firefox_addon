@@ -90,7 +90,7 @@ if [[ -e ${EXTDIR}/${ID} ]]; then
         echo "Add-on exists and no overwrite requested. Exiting."
         exit 0
     fi
-    rm -r ${EXTDIR}/${ID}
+    sudo rm -r ${EXTDIR}/${ID}
 fi
 echo "Installing $NAME to ${EXTDIR}/${ID}"
 sudo mv ${ID} ${EXTDIR}/${ID}
