@@ -3,21 +3,26 @@
 
 function help {
         cat <<HELP
-$(basename $0) (-f <FILE>|<ID>)
+$(basename $0) (-f <FILE>|<ID>[ <NAME>])
 Automatically Install Extension from URL to Google Chrome
-With '-f' install all Extensions from the IDlist '<FILE>' (Format:'\$name=\$id\\n')
+With '-f' install all Extensions from the '<FILE>' (Format:'\$name=\$id\\n')
 HELP
 exit 0
 }
 
+function execute_self_with_list() {
+  local LISTFILE=$1
+  local IFS=$'\n'
+  for extension in $(grep -v "^#" "$LISTFILE"); do
+    name="${extension%=*}"
+    ext_id="${extension#*=}"
+    $0 "$ext_id" "$name"
+  done
+}
+
 if [[ "$1" = "-f" ]]; then
   if [[ -f "$2" ]]; then
-    grep -v "^#" $2 | while read extension; do
-      name="${extension%=*}"
-      ext_id="${extension#*=}"
-      echo "installing $name"
-      $0 "$ext_id" "$name"
-    done
+    execute_self_with_list "$2"
   else
     help
   fi
@@ -27,11 +32,11 @@ fi
 
 
 EXTENSION=$1
-NAME=${2:-$EXTENSION}
 if [[ -z "$EXTENSION" ]]; then
     help
 fi
 
+NAME=${2:-$EXTENSION}
 EXTDIR=/opt/google/chrome/extensions/
 [[ ! -e $EXTDIR ]] && sudo mkdir -p $EXTDIR
 
@@ -49,20 +54,25 @@ error() {
 }
 trap 'error ${LINENO}' ERR
 
+install_addon() {
+  local ID=$1
+  local NAME=$2
+  filecontent='{
+    "external_update_url": "https://clients2.google.com/service/update2/crx"
+  }'
+  sudo sh -c "echo '$filecontent' >> $EXTDIR/${ID}" && return 0
+  return 1
+}
 
-echo "Adding Chrome Add-on $NAME"
+ID=${EXTENSION}.json
 
-if [[ -e ${EXTDIR}/${EXTENSION}.json ]]; then
+echo "Installing $NAME to ${EXTDIR}/${ID}"
+if [[ -e ${EXTDIR}/${ID} ]]; then
   read -p "Add-on exists. overwrite? y/N" -i N -t 10 answer
   if [[ "${answer,,}" != "y" ]]; then
     echo "Add-on exists and no overwrite requested. Exiting."
     exit 0
   fi
-  sudo rm -r ${EXTDIR}/${EXTENSION}.json
+  sudo rm -r ${EXTDIR}/${ID}
 fi
-filecontent='{
-  "external_update_url": "https://clients2.google.com/service/update2/crx"
-}'
-sudo sh -c "echo '$filecontent' >> $EXTDIR/${EXTENSION}.json" && echo "Success"
-
-
+install_addon ${ID} ${NAME} && echo "Success"

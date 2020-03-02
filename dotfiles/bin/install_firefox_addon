@@ -5,21 +5,26 @@ function help {
         cat <<HELP
 $(basename $0) (-f <FILE>|<URL>)
 Automatically Install Extension from URL to Firefox
-With '-f' install all Extensions from the URLlist '<FILE>' ('\\n'-seperated)
+With '-f' install all Extensions from the '<FILE>' (Format:'\$url\\n')
 HELP
 exit 0
 }
 
+function execute_self_with_list() {
+  local LISTFILE=$1
+  local IFS=$'\n'
+  for extension in $(grep -v "^#" "$LISTFILE"); do
+    $0 "$extension"
+  done
+}
+
 if [[ "$1" = "-f" ]]; then
-    if [[ -f "$2" ]]; then
-        for url in $(grep -v "^#" $2); do
-	    echo "installing $url"
-	    $0 "$url"
-        done
-    else
-	help
-    fi
-    exit 0
+  if [[ -f "$2" ]]; then
+    execute_self_with_list "$2"
+  else
+    help
+  fi
+  exit 0
 fi
 
 
@@ -30,17 +35,9 @@ if [[ -z "$EXTENSION" ]]; then
 fi
 
 NAME=$(basename $EXTENSION .xpi)
-TEMPDIR=$(mktemp -d)
-OLDPWD=$(pwd)
-EXTDIR=~/.mozilla/extensions/
 EXTDIR=/usr/lib/firefox-addons/extensions/
-cd $TEMPDIR
+[[ ! -e $EXTDIR ]] && sudo mkdir -p $EXTDIR
 
-cleanup() {
-    cd $OLDPWD
-    rm -fr "$TEMPDIR"
-}
-trap cleanup 0
 
 error() {
   local parent_lineno="$1"
@@ -55,6 +52,15 @@ error() {
 }
 trap 'error ${LINENO}' ERR
 
+TEMPDIR=$(mktemp -d)
+OLDPWD=$(pwd)
+cd $TEMPDIR
+
+cleanup() {
+    cd $OLDPWD
+    rm -fr "$TEMPDIR"
+}
+trap cleanup 0
 
 echo "Downloading Firefox Add-on $NAME"
 wget -qO "${NAME}.xpi" "$EXTENSION"
@@ -80,18 +86,22 @@ case $metadatafile in
     ;;
 esac
 
-#unzip -q ${NAME}.xpi -d $ID
+install_addon() {
+  local ID=$1
+  local NAME=$2
+  sudo mv ${NAME}.xpi ${EXTDIR}/${ID} && return 0
+  return 1
+}
+
 ID=${ID}.xpi
-mv ${NAME}.xpi $ID
 
-if [[ -e ${EXTDIR}/${ID} ]]; then
-    read -p "Add-on directory exists. overwrite? Y/N" -i N -n 1 -t 10 answer
-    if [[ "${answer,,}" != "y" ]]; then
-        echo "Add-on exists and no overwrite requested. Exiting."
-        exit 0
-    fi
-    sudo rm -r ${EXTDIR}/${ID}
-fi
 echo "Installing $NAME to ${EXTDIR}/${ID}"
-sudo mv ${ID} ${EXTDIR}/${ID}
-
+if [[ -e ${EXTDIR}/${ID} ]]; then
+  read -p "Add-on exists. overwrite? y/N" -i N -t 10 answer
+  if [[ "${answer,,}" != "y" ]]; then
+    echo "Add-on exists and no overwrite requested. Exiting."
+    exit 0
+  fi
+  sudo rm -r ${EXTDIR}/${ID}
+fi
+install_addon ${ID} ${NAME} && echo "Success"
