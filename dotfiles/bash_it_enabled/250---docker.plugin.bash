@@ -1,1 +1,1 @@
-/home/tobias.vollmer/.bash_it/plugins/available/docker.plugin.bash
+../plugins/available/docker.plugin.bash

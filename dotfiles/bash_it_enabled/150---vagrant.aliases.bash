@@ -1,1 +1,1 @@
-/home/tobias.vollmer/.bash_it/aliases/available/vagrant.aliases.bash
+../aliases/available/vagrant.aliases.bash

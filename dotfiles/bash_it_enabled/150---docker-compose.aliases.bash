@@ -1,1 +1,1 @@
-/home/tobias.vollmer/.bash_it/aliases/available/docker-compose.aliases.bash
+../aliases/available/docker-compose.aliases.bash

@@ -1,1 +1,1 @@
-/home/tobias.vollmer/.bash_it/plugins/available/browser.plugin.bash
+../plugins/available/browser.plugin.bash

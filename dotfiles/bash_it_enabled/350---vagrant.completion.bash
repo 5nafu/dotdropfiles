@@ -1,1 +1,1 @@
-/home/tobias.vollmer/.bash_it/completion/available/vagrant.completion.bash
+../completion/available/vagrant.completion.bash

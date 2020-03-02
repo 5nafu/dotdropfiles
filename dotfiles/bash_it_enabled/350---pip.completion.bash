@@ -1,1 +1,1 @@
-/home/tobias.vollmer/.bash_it/completion/available/pip.completion.bash
+../completion/available/pip.completion.bash

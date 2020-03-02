@@ -1,1 +1,1 @@
-/home/tobias.vollmer/.bash_it/plugins/available/git.plugin.bash
+../plugins/available/git.plugin.bash

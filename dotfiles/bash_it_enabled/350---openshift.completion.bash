@@ -1,3 +1,1 @@
-#!/usr/bin/env bash
-
-[ -x "$(which oc)" ] && eval "$(oc completion bash)" 
+../completion/available/openshift.completion.bash

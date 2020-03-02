@@ -1,1 +1,1 @@
-/home/tobias.vollmer/.bash_it/aliases/available/fuck.aliases.bash
+../aliases/available/fuck.aliases.bash

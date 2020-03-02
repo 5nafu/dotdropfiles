@@ -1,1 +1,1 @@
-/home/tobias.vollmer/.bash_it/plugins/available/python.plugin.bash
+../plugins/available/python.plugin.bash

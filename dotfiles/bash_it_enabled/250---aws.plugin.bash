@@ -1,1 +1,1 @@
-/home/tobias.vollmer/.bash_it/plugins/available/aws.plugin.bash
+../plugins/available/aws.plugin.bash

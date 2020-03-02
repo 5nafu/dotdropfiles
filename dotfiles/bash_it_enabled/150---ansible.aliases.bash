@@ -1,1 +1,1 @@
-/home/tobias.vollmer/.bash_it/aliases/available/ansible.aliases.bash
+../aliases/available/ansible.aliases.bash

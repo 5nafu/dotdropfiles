@@ -1,1 +1,1 @@
-/home/tobias.vollmer/.bash_it/plugins/available/sshagent.plugin.bash
+../plugins/available/sshagent.plugin.bash

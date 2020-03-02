@@ -1,1 +1,1 @@
-/home/tobias.vollmer/.bash_it/completion/available/awscli.completion.bash
+../completion/available/awscli.completion.bash

@@ -1,1 +1,1 @@
-/home/tobias.vollmer/.bash_it/completion/available/git.completion.bash
+../completion/available/git.completion.bash

@@ -1,1 +1,1 @@
-/home/tobias.vollmer/.bash_it/plugins/available/history.plugin.bash
+../plugins/available/history.plugin.bash

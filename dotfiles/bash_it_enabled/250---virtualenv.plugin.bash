@@ -1,1 +1,1 @@
-/home/tobias.vollmer/.bash_it/plugins/available/virtualenv.plugin.bash
+../plugins/available/virtualenv.plugin.bash

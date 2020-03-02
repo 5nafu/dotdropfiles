@@ -1,1 +1,1 @@
-/home/tobias.vollmer/.bash_it/plugins/available/ssh.plugin.bash
+../plugins/available/ssh.plugin.bash

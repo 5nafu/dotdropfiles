@@ -6,6 +6,7 @@ actions:
     gpg-card-import: read -p "insert your keyfob and press enter" ready && gpg --card-status
     gpg-key-import: gpg  --keyserver https://key.tvollmer.de --recv-keys 0xCD7583FE6D62D2A9 
       && echo "16142EF211C6D2340A0B08F0CD7583FE6D62D2A9:6:" | gpg --import-ownertrust
+    enable_bash_it: ln -s {{@@ _dotdrop_dotpath @@}}/bash_it_enabled {{@@ _dotdrop_dotpath @@}}/bash_it/enabled
 config:
   backup: false
   banner: true
@@ -26,13 +27,12 @@ dotfiles:
     dst: ~/.bash_it
     link: link
     src: bash_it
+    actions: 
+    - enable_bash_it
   d_kubectx:
     dst: ~/.kubectx
     link: link
     src: kubectx
-  d_bash_it_enabled:
-    dst: ~/.bash_it/enabled
-    src: bash_it_enabled
   d_bashrc.d:
     dst: ~/.bashrc.d
     src: bashrc.d

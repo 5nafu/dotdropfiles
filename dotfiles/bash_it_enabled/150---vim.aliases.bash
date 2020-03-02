@@ -1,1 +1,1 @@
-/home/tobias.vollmer/.bash_it/aliases/available/vim.aliases.bash
+../aliases/available/vim.aliases.bash
