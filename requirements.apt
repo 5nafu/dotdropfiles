@@ -17,20 +17,20 @@ function add-key-from-url-with-timeout {
   timeout $timeout bash -c "wget -qO- \"$url\" | apt-key add -"
 }
 
-retry 3 timeout 10 apt-key adv --keyserver ipv4.pool.sks-keyservers.net --recv-key 0xEB4C1BFD4F042F6DDDCCEC917721F63BD38B4796
+retry 3 timeout 5 apt-key adv --keyserver keyserver.ubuntu.com --recv-key 0xEB4C1BFD4F042F6DDDCCEC917721F63BD38B4796
 repository "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main"
 
-retry 3 timeout 10 apt-key adv --keyserver ipv4.pool.sks-keyservers.net --recv-key 0xDBA36B5181D0C816F630E889D980A17457F6FB06
+retry 3 timeout 5 apt-key adv --keyserver keyserver.ubuntu.com --recv-key 0xDBA36B5181D0C816F630E889D980A17457F6FB06
 repository "deb [arch=amd64] https://updates.signal.org/desktop/apt xenial main"
 
-retry 3 timeout 10 apt-key adv --keyserver ipv4.pool.sks-keyservers.net --recv-key 0xBC528686B50D79E339D3721CEB3E94ADBE1229CF
+retry 3 timeout 5 apt-key adv --keyserver keyserver.ubuntu.com --recv-key 0xBC528686B50D79E339D3721CEB3E94ADBE1229CF
 repository "deb [arch=amd64] http://packages.microsoft.com/repos/vscode stable main"
 
-retry 3 add-key-from-url-with-timeout 10 https://download.opensuse.org/repositories/devel:kubic:libcontainers:stable/xUbuntu_$(lsb_release -sr)/Release.key
+retry 3 add-key-from-url-with-timeout 5 https://download.opensuse.org/repositories/devel:kubic:libcontainers:stable/xUbuntu_$(lsb_release -sr)/Release.key
 repository "deb http://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_$(lsb_release -sr)/ /"
 
 #https://packagecloud.io/github/git-lfs/gpgkey
-retry 3 timeout 10 apt-key adv --keyserver ipv4.pool.sks-keyservers.net --recv-key 0x6D398DBD30DD78941E2C4797FE2A5F8BDC282033
+retry 3 timeout 5 apt-key adv --keyserver keyserver.ubuntu.com --recv-key 0x6D398DBD30DD78941E2C4797FE2A5F8BDC282033
 repository "deb https://packagecloud.io/github/git-lfs/${lsb_id,,}/ $(lsb_release -sc) main"
 
 # For mkusb
