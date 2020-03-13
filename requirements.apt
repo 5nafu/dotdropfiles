@@ -119,7 +119,6 @@ packagelist \
   "chromium-browser-l10n" \
   "chromium-browser" \
   "chromium-codecs-ffmpeg-extra" \
-  "code" \
   "curl" \
   "default-jre" \
   "dialog" \
