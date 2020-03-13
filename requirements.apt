@@ -106,6 +106,8 @@ ppa mkusb/ppa
 log_info "Updating"
 update
 
+debconf_selection "wireshark-common/install-setuid: true"
+
 log_info "Installing packages"
 packagelist \
   "ack" \
