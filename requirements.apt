@@ -106,7 +106,7 @@ ppa mkusb/ppa
 log_info "Updating"
 update
 
-debconf_selection "wireshark-common/install-setuid: true"
+debconf_selection "wireshark-common        wireshark-common/install-setuid boolean true"
 
 log_info "Installing packages"
 packagelist \
