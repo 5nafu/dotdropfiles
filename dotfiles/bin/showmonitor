@@ -1,0 +1,31 @@
+#!/bin/bash
+
+set -e -E -U
+OPTIONS=${@}
+
+if [[ -z "$OPTIONS" ]]; then
+    if hash zenity 2>/dev/null && hash wmctrl 2>/dev/null ; then
+        mapfile -t arr < <(wmctrl  -l  | grep -v -- " -1 " |sed 's/\([0-9x]*\)  *[^ ]* *[^ ]* \(.*\)/\1\n\2/')
+        WINDOW=$(zenity \
+                        --width=800 \
+                        --height=600 \
+                        --list \
+                        --text="Select Window to beam, Cancel to beam the second screen" \
+                        --column=ID \
+                        --column=Title \
+                        --hide-column=1 \
+                        --print-column=1 \
+                        --hide-header "${arr[@]}"|cut -d '|' -f 1)
+    else
+        echo "Zenity (Graphical Dialog) or wmctrl (Window controller) not installed, Window select disabled"
+        echo "Execute 'sudo apt-get install zenity wmctrl' to install and enable Window selection"
+    fi
+    if [[ -n "$WINDOW" ]]; then
+        OPTIONS="-id $WINDOW"
+    else
+        OPTIONS=${@:-"-clip xinerama1"}
+    fi
+fi
+
+
+x11vnc -connect isdeblnrpi35 -scale 1920x1080 $OPTIONS

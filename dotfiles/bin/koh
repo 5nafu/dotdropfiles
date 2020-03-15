@@ -1,0 +1,5 @@
+#!/bin/bash
+
+env WINEPREFIX="/home/tobias/.wine" wine "C:\\Program Files\\Black Sea Studios\\Knights Of Honor\\KoH.exe"
+
+

@@ -1,0 +1,26 @@
+#!/bin/bash
+
+
+
+#show files in /etc, not in package management.
+echo "###########################"
+echo "# unmanaged files in /etc #"
+echo "###########################"
+( dpkg-query -W -f='${Conffiles}\n' '*' \
+				| awk '{print $1}' \
+				| grep -v "^$" ; \
+				find /etc/ -type f ) \
+	|sort \
+	|uniq -c \
+	|grep "1 " \
+	|awk '{print $2}'
+
+#show changed config files
+
+echo "#########################"
+echo "# changed files in /etc #"
+echo "#########################"
+dpkg-query -W -f='${Conffiles}\n' '*' \
+				| awk 'OFS="  "{print $2,$1}' \
+				| md5sum -c 2>/dev/null \
+				| awk -F': ' '$2 !~ /OK/{print $1}'

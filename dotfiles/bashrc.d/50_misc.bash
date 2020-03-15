@@ -74,3 +74,7 @@ function box_out() {
 ##${s//?/\#}##"
     tput sgr 0
 }
+
+function title() {
+    echo -e '\033]2;'$@'\007'
+}

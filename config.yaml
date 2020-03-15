@@ -4,9 +4,10 @@ actions:
     chmod_ssh: chmod 700 ~/.ssh
     code_install_sync: ./dotfiles/bin/install_settings-sync_extension.sh 42bac981cb8cd55e1a98f6eeab0ed297
     gpg-card-import: read -p "insert your keyfob and press enter" ready && gpg --card-status
-    gpg-key-import: gpg  --keyserver https://key.tvollmer.de --recv-keys 0xCD7583FE6D62D2A9 
+    gpg-key-import: gpg --keyserver https://key.tvollmer.de --recv-keys 0xCD7583FE6D62D2A9
       && echo "16142EF211C6D2340A0B08F0CD7583FE6D62D2A9:6:" | gpg --import-ownertrust
     enable_bash_it: ln -s {{@@ _dotdrop_dotpath @@}}/bash_it_enabled {{@@ _dotdrop_dotpath @@}}/bash_it/enabled
+    install_vim_plugins : vim +PlugUpgrade +PlugUpdate +qall
 config:
   backup: false
   banner: true
@@ -27,7 +28,7 @@ dotfiles:
     dst: ~/.bash_it
     link: link
     src: bash_it
-    actions: 
+    actions:
     - enable_bash_it
   d_kubectx:
     dst: ~/.kubectx
@@ -139,6 +140,41 @@ dotfiles:
     src: kube/config
     trans_read: gpg
     trans_write: gpg
+  f_vimrc:
+    src: vimrc
+    dst: ~/.vimrc
+
+  f_vim_colors_tomorrow-night.vim:
+    src: vim/colors/Tomorrow-Night.vim
+    dst: ~/.vim/colors/Tomorrow-Night.vim
+  f_vidalia_vidalia.conf:
+    src: vidalia/vidalia.conf
+    dst: ~/.vidalia/vidalia.conf
+    trans_read: gpg
+    trans_write: gpg
+  f_ssh_authorized_keys:
+    src: ssh/authorized_keys
+    dst: ~/.ssh/authorized_keys
+  f_nut-monitor_favorites.ini:
+    src: nut-monitor/favorites.ini
+    dst: ~/.nut-monitor/favorites.ini
+    trans_read: gpg
+    trans_write: gpg
+  f_bashrc.andor:
+    src: bashrc.andor
+    dst: ~/.bashrc.andor
+    trans_read: gpg
+    trans_write: gpg
+  f_docker_config.json:
+    src: docker/config.json
+    dst: ~/.docker/config.json
+    trans_read: gpg
+    trans_write: gpg
+  f_arm_armrc:
+    src: arm/armrc
+    dst: ~/.arm/armrc
+    trans_read: gpg
+    trans_write: gpg
 profiles:
   common:
     dotfiles:
@@ -176,6 +212,11 @@ profiles:
     include:
     - common
     - linux
+    dotfiles:
+    - f_vidalia_vidalia.conf
+    - f_nut-monitor_favorites.ini
+    - f_bashrc.andor
+    - f_arm_armrc
   linux:
     dotfiles:
     - d_autostart
@@ -186,6 +227,10 @@ profiles:
     - f_custom-webbrowser.desktop
     - f_xdefaults
     - f_config_xfce4_helpers.rc
+    - f_vimrc
+    - f_vim_colors_tomorrow-night.vim
+    - f_ssh_authorized_keys
+    - f_docker_config.json
 trans_write:
   gpg: gpg -qaer 0x16142EF211C6D2340A0B08F0CD7583FE6D62D2A9 -o- {0} > {1}
 variables:

@@ -2,31 +2,75 @@
 
 
 remove=true
-if [[ "x$1" = "x-k" ]]; then
-    remove=false
-    shift
-fi
+samedir=false
+while [[ $# -gt 1 ]]; do
+    case "x$1" in
+        "x-k")
+            remove=false
+            shift
+            ;;
+        "x-s")
+            samedir=true
+            shift
+            ;;
+        *)
+            echo "Illegal Argument '$1'"
+            exit 1
+            ;;
 
-[[ -f "password" ]] && password="-p$(cat password 2>/dev/null)"
+    esac
+done
 
 archive="$1"
+realarchive="$1"
 extension="${archive##*.}"
 basename="${archive%.*}"
 output="${2:-$basename}"
 success=false
 
+[[ -f "password" ]] && password="-p$(cat password 2>/dev/null)"
+if [[ -f "$basename.pass" || -f "$archive.pass" ]] ; then
+    pass=$(cat "$basename.pass" "$archive.pass" 2>/dev/null)
+    case "$extension" in
+        zip)
+            password="-P$pass"
+            ;;
+        *)
+        password="-p$pass"
+        ;;
+    esac
+fi
 
+if [[ ! -f "$archive" ]] && [[ -f "$archive.001" ]] ; then
+    realarchive="$archive.001"
+fi
+
+OUT_OPT=""
 case "$extension" in
     7z)
-        7z x $password -o"$output" -- "$archive" && success=true
+        if $samedir; then
+            7z x $password -- "$realarchive" && success=true
+        else
+            7z x $password -o"$output" -- "$realarchive" && success=true
+        fi
         ;;
     rar)
         OWD=$(pwd)
-        mkdir -p "$output" && \
-        cd "$output" && \
-        unrar x $password "$OWD/$archive" && \
+        if $samedir; then
+            mkdir -p "$output"
+            cd "$output"
+        fi
+        unrar x $password "$OWD/$realarchive" && \
         cd "$OWD" && \
         success=true
+        ;;
+    zip)
+        if $samedir; then 
+            unzip $password "$realarchive" && success=true
+        else
+            mkdir -p "$output" && \
+            unzip $password -d "$output" "$realarchive" && success=true
+        fi
         ;;
     *)
         echo "No handler found for archivetype '$extension'."
@@ -34,7 +78,7 @@ case "$extension" in
         ;;
 esac
 
-$success && $remove && rm "$archive"
+$success && $remove && rm "$archive" "$basename.pass" "$archive.pass" "$archive.0"* 2>/dev/null
 
 
 

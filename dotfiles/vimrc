@@ -1,0 +1,413 @@
+"=======
+" Setup
+"=======
+
+set nobackup
+
+" Extra terminal things
+if (($TERM == "rxvt-unicode") || ($TERM =~ "xterm") || ($TERM =~ "screen")) && (&termencoding == "")
+  set termencoding=utf-8
+endif
+
+" Show tabs and trailing whitespace visually
+if (&termencoding != "utf-8")
+  set list listchars=tab:>-,trail:.,extends:>,nbsp:_
+endif
+
+" Remove Numbers if window is not wide enough
+fun! <SID>SetNumberDependingOnWindowWidth()
+  if winwidth(0) > 90
+      setlocal number
+  else
+      setlocal nonumber
+  endif
+endfun
+
+" Move Window to bottom of screen while keeping it's size
+fun! <SID>WindowToBottom()
+  let l:h=winheight(0)
+  wincmd J
+  execute "resize" l:h
+endfun
+
+"==========
+" Settings
+"==========
+
+" Include $HOME in cdpath
+let &cdpath=','.expand("$HOME")
+
+" Perl specific options
+let perl_fold=1
+let perl_fold_blocks=1
+let perl_include_pod=1
+
+" Settings for :TOhtml
+let html_number_lines=1
+let html_use_css=1
+let use_xhtml=1
+
+" Vim specific options
+let g:vimsyntax_noerror=1
+
+" VIM - Editing and updating the vimrc: - Part 1
+" As I often make changes to this file I use these commands
+" to start editing it and also update it:
+if has("unix")
+  let vimrc='~/.vimrc'
+else
+  let vimrc='$VIM\_vimrc'
+endif
+
+" set up some more useful digraphs
+digraph ., 8230 " ellipsis (…)
+
+" Enable filetype settings
+filetype on
+filetype plugin on
+filetype indent on
+
+"  autoindent: auto indent, nice for coding
+set autoindent
+
+" Show trailing Whitespace
+hi! link ExtraWhitespaceMatch ExtraWhitespace
+set background=dark
+
+" backspace:  '2' allows backspacing" over
+" indentation, end-of-line, and start-of-line.
+" see also "help bs".
+set backspace=2
+
+"  comments default: sr:/*,mb:*,el:*/,://,b:#,:%,:XCOMM,n:>,fb:-
+set comments=b:#,:%,fb:-,n:>,n:)
+
+" Highlight Cursor
+set cursorline
+
+" digraph:  required for those umlauts
+set digraph
+
+" Expand tabs to spaces
+set expandtab
+
+" formatoptions:  Options for the "text format" command ("gq")
+set formatoptions=cqrtn
+
+" hlsearch :  highlight search - show the current search pattern
+" This is a nice feature sometimes - but it sure can get in the
+" way sometimes when you edit.
+set hlsearch
+
+" incsearch: While typing a search command, show immediately where
+" the so far typed pattern matches.  The matched string is
+" highlighted.
+set incsearch
+
+" Nice statusbar
+set laststatus=2
+set statusline=
+set statusline+=%-3.3n\                    " buffer number
+set statusline+=%f\                        " file name
+set statusline+=%h%m%r%w                   " flags
+set statusline+=\[%{strlen(&ft)?&ft:'none'}, " filetype
+set statusline+=%{&encoding},              " encoding
+set statusline+=%{&fileformat}]            " file format
+set statusline+=%=                         " right align
+set statusline+=0x%-8B\                    " current char
+set statusline+=%-14.(%l,%c%V%)\ %<%P      " offset
+
+" Speed up Macros
+set lazyredraw
+
+" Wrap long lines of Text
+set linebreak
+
+" modeline:  Allow the last line to be a modeline
+set modeline
+set modelines=1
+
+" enable mouse scrolling, selection, etc in help- and normal-mode
+set mouse=hn
+
+" Do not behave like vi
+set nocompatible
+
+" Do not beep!
+set noerrorbells
+
+" Keep the syntax when printing
+set popt+=syntax:y
+
+" Alway report the number of changed lines
+set report=0
+
+" Show the curser position
+set ruler
+
+" Try to show at least three lines and two columns of context when scrolling
+set scrolloff=3
+set sidescrolloff=2
+
+" shiftwidth: Number of spaces to use for each insertion of (auto)indent.
+set shiftwidth=4
+set softtabstop=4
+
+" Shorter messages
+set shortmess=at
+
+" Show current uncompleted command.
+set showcmd
+
+" Highlight matching parens
+set showmatch
+
+" Show edit mode
+set noshowmode
+
+" smartindent: Do smart autoindenting when starting a new line.
+" Works for C-like programs, but can also be used for other
+" languages. cindent or smartindent
+set smartindent
+
+" Create new window below current one.
+set splitbelow
+
+" tabstop: (ts)
+set tabstop=4
+
+" Show the filename in the window titlebar.
+set title
+set titleold="bash"
+
+set textwidth=80
+set viminfo='1000,f1,:1000,/1000
+
+" No visualbell either...
+set t_vb=
+set visualbell
+
+" wrap around when moving across lineends
+set whichwrap+=<,>,[,]
+
+" Use the cool tab complete menu
+set wildmenu
+set wildmode=list:longest,full
+" Ignore things
+set wildignore+=*.jpg,*.jpeg,*.gif,*.png,*.gif,*.psd,*.o,*.obj,*.min.js
+set wildignore+=*/bower_components/*,*/node_modules/*
+set wildignore+=*/vendor/*,*/.git/*,*/.hg/*,*/.svn/*,*/log/*,*/tmp/*
+set wildignore+=*.o,*~
+
+" Enable syntax highlighting
+syntax on
+
+"==============
+" Autocommands
+"==============
+
+" fix background color bug in screen
+if ($TERM =~ "screen")
+  autocmd VimLeave * :set term=screen
+endif
+
+" if we have a vim which supports QuickFixCmdPost (patch by
+" ciaranm, marked for inclusion in vim7), give us an error
+" window after running make, grep etc, but only if results are
+" available.
+try
+  autocmd QuickFixCmdPost * :cwindow 3
+  autocmd FileType qf :3 wincmd _ | :call <SID>WindowToBottom()
+catch
+endtry
+
+augroup starting
+  autocmd!
+  " Remove Numbers if window is not wide enough
+  autocmd BufEnter * :call <SID>SetNumberDependingOnWindowWidth()
+
+  " Redraw syntax from start of file
+  autocmd BufEnter * syntax sync fromstart
+
+  " Disable Highlight if idle for x seconds
+  autocmd CursorHold * nohls | redraw
+
+  " Extra whitespace
+  autocmd BufWinEnter * :2match ExtraWhitespaceMatch /\s\+$/
+  autocmd InsertEnter * :2match ExtraWhitespaceMatch /\s\+\%#\@<!$/
+  autocmd InsertLeave * :2match ExtraWhitespaceMatch /\s\+$/
+  " Show trailing whitespace.
+  autocmd ColorScheme * :hi ExtraWhitespace ctermbg=red guibg=red
+
+  " When editing a file, always jump to the last known cursor position. Don't do
+  " it for commit messages, when the position is invalid, or when inside an event
+  " handler (happens when dropping a file on gvim).
+  autocmd BufReadPost *
+    \ if &ft != 'gitcommit' && line("'\"") > 0 && line("'\"") <= line("$") |
+    \   exe "normal g`\"" |
+    \ endif
+augroup END
+
+augroup markdown
+  autocmd!
+  au! BufRead,BufNewFile *.mkd setfiletype mkd
+  au! BufRead,BufNewFile *.md setfiletype mkd
+  autocmd BufRead *.mkd set ai formatoptions=tcroqn2 comments=n:>
+  autocmd BufRead *.md set ai formatoptions=tcroqn2 comments=n:>
+augroup END
+
+augroup cmake
+  autocmd!
+  autocmd BufRead CMakeLists.txt :setlocal et ts=2 sw=2 comments=\:\#
+  autocmd BufRead *.cmake :setlocal et ts=2 sw=2 comments=\:\#
+augroup END
+
+augroup filespecific
+  autocmd!
+  au BufNewFile,BufRead svn-commit.* setf svn
+  autocmd BufRead procmailrc :setfiletype procmail
+  autocmd BufRead svn-commit.tmp :setlocal nobackup
+  autocmd FileType help nmap <buffer> <Return> <C-]>
+augroup END
+
+
+"=========
+" Mapping
+"=========
+
+" Disable search highlighting
+imap <silent> <F3> <C-o>:silent nohlsearch<CR>
+nmap <silent> <F3> :silent nohlsearch<CR>
+
+" Commands around Tabs
+nmap T :tabnew<CR>
+map T :tabnew<CR>
+nmap W :tabclose<CR>
+map W :tabclose<CR>
+nmap X :tabnext<CR>
+map X :tabnext<CR>
+nmap Y :tabprevious<CR>
+map Y :tabprevious<CR>
+
+" Delete blank lines
+noremap <Leader>dbl :g/^$/d<CR>:nohls<CR>
+
+" Select everything
+noremap <Leader>gg ggVG
+
+" Reformat everything
+noremap <Leader>gq gggqG
+
+" Reformat paragraph
+noremap <Leader>gp gqap
+
+" Make <space> in normal mode go down a page rather than left a
+" character
+noremap <space> <C-f>
+
+" Indent comments as well see :help smartindent
+inoremap # X<BS>#
+
+" VIM - Editing and updating the vimrc: - Part 2
+nn  ,u :source <C-R>=vimrc<CR><CR>
+nn  ,v :edit   <C-R>=vimrc<CR><CR>
+
+" Allow saving of files as sudo when I forgot to start vim using sudo.
+cmap w!! w !sudo tee > /dev/null %
+
+"===============
+" Abbreviations
+"==============
+
+iab AbNeuler 2.7182818284590452353602874713526624977573
+iab AbPi 3.1415926535897932384626433832795028841972
+iab Abalpha abcdefghijklmnopqrstuvwxyz
+iab AbALPHA ABCDEFGHIJKLMNOPQRSTUVWXYZ
+iab AbDigit 1234567890
+iab AbHex 1234567890ABCDEF
+iab AbDATE <C-R>=strftime("%a %b %d %T %Z %Y")<CR>
+iab AbDate <C-R>=strftime("%y%m%d")<CR>
+iab AbDT <C-R>=strftime("%y%m%d %T")<CR>
+iab AbTime <C-R>=strftime("%H:%M")<CR>
+iab AbFILE <C-R>=expand("%:t:r")<cr>
+iab AbPATH <C-R>=expand("%:h")<cr>
+iab AbPATHFILE <C-R>=expand("%:p")<cr>
+iab AbRuler 1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890
+iab AbName Tobias Vollmer
+iab AbUser tobias.vollmer
+
+"=========
+" Plugins
+"=========
+
+" https://github.com/junegunn/vim-plug
+" Reload .vimrc and :PlugInstall to install plugins.
+if empty(glob('~/.vim/autoload/plug.vim'))
+  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
+call plug#begin('~/.vim/plugged')
+" Lean & mean status/tabline for vim that's light as air.
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+" Surround.vim is all about "surroundings": parentheses, brackets, quotes, XML tags, and more.
+Plug 'tpope/vim-surround'
+" Fugitive is the premiere Vim plugin for Git.
+Plug 'tpope/vim-fugitive'
+" Comment stuff out.
+Plug 'tpope/vim-commentary'
+" visually displaying indent levels
+Plug 'nathanaelkane/vim-indent-guides'
+" Show a diff using Vim its sign column.
+"Plug 'mhinz/vim-signify'
+" A Vim plugin which shows a git diff in the 'gutter' (sign column)
+Plug 'airblade/vim-gitgutter'
+"This is a vim syntax plugin for Ansible 2.x
+Plug 'pearofducks/ansible-vim'
+"Vim python-mode. PyLint, Rope, Pydoc, breakpoints from box.
+Plug 'klen/python-mode', {'for': 'python', 'branch': 'last-py2-support'}
+"True Sublime Text style multiple selections for Vim
+Plug 'terryma/vim-multiple-cursors'
+" Material theme
+Plug 'kristijanhusak/vim-hybrid-material'
+call plug#end()
+
+"===================== 
+" Plugin configuration
+"===================== 
+
+" vim-hybrid-material
+if (has("nvim"))
+  "For Neovim 0.1.3 and 0.1.4 < https://github.com/neovim/neovim/pull/2198 >
+  let $NVIM_TUI_ENABLE_TRUE_COLOR=1
+endif
+
+"For Neovim > 0.1.5 and Vim > patch 7.4.1799 < https://github.com/vim/vim/commit/61be73bb0f965a895bfb064ea3e55476ac175162 >
+"Based on Vim patch 7.4.1770 (`guicolors` option) < https://github.com/vim/vim/commit/8a633e3427b47286869aa4b96f2bfc1fe65b25cd >
+" < https://github.com/neovim/neovim/wiki/Following-HEAD#20160511 >
+if (has("termguicolors"))
+  set termguicolors
+endif
+colorscheme Tomorrow-Night
+if (filereadable($HOME . "/.vim/plugged/vim-hybrid-material/colors/hybrid_material.vim")) && ((has("nvim")) || (has("termguicolors")))
+  colorscheme hybrid_material
+endif
+if (filereadable($HOME . "/.vim/plugged/vim-airline-themes/autoload/airline/themes/hybrid.vim"))
+  let g:airline_theme = "hybrid"
+endif
+
+" ansible-vim
+let g:ansible_unindent_after_newline = 1
+let g:ansible_attribute_highlight = "ob"
+let g:ansible_name_highlight = 'b'
+let g:ansible_extra_keywords_highlight = 1
+let g:ansible_normal_keywords_highlight = 'Constant'
+
+" vim-indent-guides
+let g:indent_guides_start_level = 1
+let g:indent_guides_guide_size = 1
+let g:indent_guides_auto_colors = 0
+let g:indent_guides_enable_on_vim_startup = 1
+autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd  guibg=#2a2a2a   ctermbg=81
+autocmd VimEnter,Colorscheme * :hi IndentGuidesEven guibg=#4d5057 ctermbg=83

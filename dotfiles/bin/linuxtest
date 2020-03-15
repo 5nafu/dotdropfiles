@@ -1,0 +1,90 @@
+#!/bin/bash
+
+OPTIND=1 
+daemonize=""
+display=""
+persistent="-snapshot"
+enable_cdrom=false
+cdrom=""
+CD="/var/lib/libvirt/images/debian-8.1.0-amd64-netinst.iso"
+order=dcn
+
+
+
+
+show_help() {
+    echo "Options:"
+    echo "	-h This Help"
+    echo "	-d Daemonize kvm"
+    echo "	-t Display console as curses text"
+    echo "	-v Display console via VNC"
+    echo "	-p Persistent storage changes"
+    echo "  -c Enable CDROM with default image (Debian 8.1 netinst)"
+    echo "	-I <Image> Use this Image as CDROM"
+    echo "  -b <order> Boot Order."
+    echo "             n -> Netzwek"
+    echo "             d -> CDROM"
+    echo "             c -> first HDD"
+    echo "             default: dcn"
+}
+
+
+while getopts "h?dtcvpI:b:" opt; do
+    case "$opt" in
+    h|\?)
+        show_help
+        exit 0
+        ;;
+    d)  daemonize="-daemonize"
+        ;;
+    t)  display="-curses"
+        ;;
+    v)  display="-vnc 127.0.0.1:8"
+        ;;
+    p)  persistent=""
+        ;;
+    c)  enable_cdrom=true
+        ;;
+    I)  CD=$OPTARG
+        ;;
+    b)  order=$OPTARG
+    esac
+done
+
+#if [[ $display == "" ]]; then
+#    echo "NO DISPLAY SET"
+#    echo "You have to set at least one display option" 
+#    show_help
+#    exit 1
+#fi
+
+if $enable_cdrom; then
+    cdrom="-drive file=$CD,readonly=on,format=raw,media=cdrom"
+fi
+sudo /usr/bin/kvm \
+-M pc-0.12 \
+-enable-kvm \
+-m 1024 \
+-smp 2,sockets=1,cores=2,threads=1 \
+-name Buildtest \
+-uuid 00dbd6c7-adfe-8d88-7ab9-e7e0f21df077 \
+-nodefaults \
+-rtc base=utc \
+-drive file=/var/lib/libvirt/images/LinuxTest.readonly.qcow,if=virtio,cache=writeback \
+$cdrom \
+-net nic,macaddr=52:54:00:1a:12:be,vlan=0,model=virtio \
+-net tap \
+-vga cirrus \
+-device virtio-balloon-pci,id=balloon0,bus=pci.0,addr=0x6 \
+$persistent \
+-usbdevice tablet \
+-monitor telnet:127.0.0.1:4444,server,nowait \
+-boot order=$order \
+$display \
+$daemonize \
+
+#-drive file=/var/lib/libvirt/images/LinuxTest.readonly.qcow,if=virtio,cache=writeback,snapshot=on \
+#-sdl
+#-k de \
+
+#-vnc 127.0.0.1:0 \
