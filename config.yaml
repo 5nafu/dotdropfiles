@@ -6,8 +6,9 @@ actions:
     gpg-card-import: read -p "insert your keyfob and press enter" ready && gpg --card-status
     gpg-key-import: gpg --keyserver https://key.tvollmer.de --recv-keys 0xCD7583FE6D62D2A9
       && echo "16142EF211C6D2340A0B08F0CD7583FE6D62D2A9:6:" | gpg --import-ownertrust
-    enable_bash_it: ln -s {{@@ _dotdrop_dotpath @@}}/bash_it_enabled {{@@ _dotdrop_dotpath @@}}/bash_it/enabled
-    install_vim_plugins : vim +PlugUpgrade +PlugUpdate +qall
+    enable_bash_it: ln -s {{@@ _dotdrop_dotpath @@}}/bash_it_enabled {{@@ _dotdrop_dotpath
+      @@}}/bash_it/enabled
+    install_vim_plugins: vim +PlugUpgrade +PlugUpdate +qall
 config:
   backup: false
   banner: true
@@ -143,7 +144,6 @@ dotfiles:
   f_vimrc:
     src: vimrc
     dst: ~/.vimrc
-
   f_vim_colors_tomorrow-night.vim:
     src: vim/colors/Tomorrow-Night.vim
     dst: ~/.vim/colors/Tomorrow-Night.vim
@@ -175,6 +175,9 @@ dotfiles:
     dst: ~/.arm/armrc
     trans_read: gpg
     trans_write: gpg
+  f_config_xfce4_xfconf_xfce-perchannel-xml_xsettings.xml:
+    src: config/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml
+    dst: ~/.config/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml
 profiles:
   common:
     dotfiles:
@@ -217,6 +220,7 @@ profiles:
     - f_nut-monitor_favorites.ini
     - f_bashrc.andor
     - f_arm_armrc
+    - f_config_xfce4_xfconf_xfce-perchannel-xml_xsettings.xml
   linux:
     dotfiles:
     - d_autostart
