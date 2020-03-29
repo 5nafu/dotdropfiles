@@ -156,6 +156,7 @@ packagelist \
   "ksudoku" \
   "libvirt-clients" \
   "libvirt-daemon" \
+  "libvirt-daemon-system" \
   "light-locker" \
   "mc" \
   "meld" \

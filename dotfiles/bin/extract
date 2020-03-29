@@ -5,6 +5,11 @@ remove=true
 samedir=false
 while [[ $# -gt 1 ]]; do
     case "x$1" in
+        "x-d")
+            echo "Debug"
+            shift
+            set -x
+            ;;
         "x-k")
             remove=false
             shift
