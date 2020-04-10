@@ -117,6 +117,7 @@ packagelist \
   "audacity-data" \
   "audacity" \
   "autorandr" \
+  "bridge-utils" \
   "calibre" \
   "chromium-browser-l10n" \
   "chromium-browser" \
@@ -137,6 +138,7 @@ packagelist \
   "flake8" \
   "fping" \
   "fslint" \
+  "gir1.2-spiceclientgtk-3.0" \
   "git-extras" \
   "git-lfs" \
   "gnucash" \
@@ -189,6 +191,7 @@ packagelist \
   "python3-virtualenv" \
   "qemu-kvm" \
   "qemu-utils" \
+  "qemu-system-gui" \
   "qrencode" \
   "samba-common" \
   "scanbd" \

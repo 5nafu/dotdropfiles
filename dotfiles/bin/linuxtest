@@ -2,34 +2,45 @@
 
 OPTIND=1 
 daemonize=""
-display=""
+display="-display gtk"
 persistent="-snapshot"
 enable_cdrom=false
 cdrom=""
 CD="/var/lib/libvirt/images/debian-8.1.0-amd64-netinst.iso"
+DISK="/var/lib/libvirt/images/LinuxTest.readonly.qcow"
 order=dcn
+usb_devices=()
 
 
 
 
 show_help() {
     echo "Options:"
-    echo "	-h This Help"
-    echo "	-d Daemonize kvm"
-    echo "	-t Display console as curses text"
-    echo "	-v Display console via VNC"
-    echo "	-p Persistent storage changes"
-    echo "  -c Enable CDROM with default image (Debian 8.1 netinst)"
-    echo "	-I <Image> Use this Image as CDROM"
-    echo "  -b <order> Boot Order."
+    echo "    -h This Help"
+    echo "    -d Daemonize kvm"
+    echo "    -t Display console as curses text"
+    echo "    -v Display console via VNC"
+    echo "    -p Persistent storage changes"
+    echo "    -c Enable CDROM with default image (Debian 8.1 netinst)"
+    echo "    -C <Image> Use this Image as CDROM (implies -c)"
+    echo "    -D <Image> Use this Image as DISK"
+    echo "    -b <order> Boot Order."
     echo "             n -> Netzwek"
     echo "             d -> CDROM"
     echo "             c -> first HDD"
     echo "             default: dcn"
+    echo "    -u <device:identifier> attach given usb device to VM"
 }
 
+generate_usb_device() {
+    identifier=$1
+    usb_device=$(lsusb |grep "$identifier")
+    if [[ -n "$usb_device" ]]; then
+      echo "-usb -device usb-host,vendorid=0x${identifier%:*},productid=0x${identifier#*:}"
+    fi
+}
 
-while getopts "h?dtcvpI:b:" opt; do
+while getopts "h?dtcvpD:C:b:u:" opt; do
     case "$opt" in
     h|\?)
         show_help
@@ -45,9 +56,14 @@ while getopts "h?dtcvpI:b:" opt; do
         ;;
     c)  enable_cdrom=true
         ;;
-    I)  CD=$OPTARG
+    C)  enable_cdrom=true
+        CD=$OPTARG
+        ;;
+    D)  DISK=$OPTARG
         ;;
     b)  order=$OPTARG
+        ;;
+    u)  usb_devices+=( "$(generate_usb_device $OPTARG)" )
     esac
 done
 
@@ -57,34 +73,44 @@ done
 #    show_help
 #    exit 1
 #fi
+if [[ ! -f $DISK ]]; then
+   echo "NO DISK present" >&2
+   echo "No such file or directory: '$DISK'" >&2
+   show_help
+   exit 1
+fi
 
 if $enable_cdrom; then
     cdrom="-drive file=$CD,readonly=on,format=raw,media=cdrom"
 fi
 sudo /usr/bin/kvm \
--M pc-0.12 \
--enable-kvm \
--m 1024 \
--smp 2,sockets=1,cores=2,threads=1 \
--name Buildtest \
--uuid 00dbd6c7-adfe-8d88-7ab9-e7e0f21df077 \
--nodefaults \
--rtc base=utc \
--drive file=/var/lib/libvirt/images/LinuxTest.readonly.qcow,if=virtio,cache=writeback \
-$cdrom \
--net nic,macaddr=52:54:00:1a:12:be,vlan=0,model=virtio \
--net tap \
--vga cirrus \
--device virtio-balloon-pci,id=balloon0,bus=pci.0,addr=0x6 \
-$persistent \
--usbdevice tablet \
--monitor telnet:127.0.0.1:4444,server,nowait \
--boot order=$order \
-$display \
-$daemonize \
-
-#-drive file=/var/lib/libvirt/images/LinuxTest.readonly.qcow,if=virtio,cache=writeback,snapshot=on \
-#-sdl
-#-k de \
-
-#-vnc 127.0.0.1:0 \
+    -boot order=$order \
+    -cpu Haswell-noTSX-IBRS \
+    -device ich9-usb-ehci1,id=usb,bus=pci.0,addr=0x5.0x7 \
+    -device ich9-usb-uhci1,masterbus=usb.0,firstport=0,bus=pci.0,multifunction=on,addr=0x5 \
+    -device ich9-usb-uhci2,masterbus=usb.0,firstport=2,bus=pci.0,addr=0x5.0x1 \
+    -device ich9-usb-uhci3,masterbus=usb.0,firstport=4,bus=pci.0,addr=0x5.0x2 \
+    -device virtio-balloon-pci,id=balloon0,bus=pci.0,addr=0x6 \
+    -device virtio-blk-pci,scsi=off,bus=pci.0,addr=0x7,drive=drive-virtio-disk0,id=virtio-disk0 \
+    -drive file=$DISK,if=none,cache=writeback,id=drive-virtio-disk0 \
+    $cdrom \
+    -enable-kvm \
+    -global kvm-pit.lost_tick_policy=delay \
+    -global PIIX4_PM.disable_s3=1 \
+    -global PIIX4_PM.disable_s4=1 \
+    -m 8192 \
+    -machine pc-i440fx-artful,accel=kvm,usb=off,vmport=off,dump-guest-core=off \
+    -monitor telnet:127.0.0.1:4444,server,nowait \
+    -name Buildtest \
+    -net nic,macaddr=52:54:00:1a:12:be,model=virtio \
+    -net tap \
+    -nodefaults \
+    -rtc base=utc \
+    -smp 6,sockets=6,cores=1,threads=1 \
+    -device usb-tablet \
+    -vga cirrus \
+    -uuid 00dbd6c7-adfe-8d88-7ab9-e7e0f21df077 \
+    $persistent \
+    $display \
+    $daemonize \
+    ${usb_devices[@]}
