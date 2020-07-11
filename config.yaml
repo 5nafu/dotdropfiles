@@ -211,6 +211,7 @@ profiles:
       git_email: tobias.vollmer@idealo.de
       git_user: Tobias Vollmer
       MailReader: evolution
+      WebBrowser: google-chrome
   andor:
     include:
     - common
@@ -241,5 +242,6 @@ variables:
   git_email: info@tvollmer.de
   git_user: 5nafu
   MailReader: thunderbird
+  WebBrowser: custom-WebBrowser
 trans_read:
   gpg: gpg -q --for-your-eyes-only --no-tty -d {0} > {1}
