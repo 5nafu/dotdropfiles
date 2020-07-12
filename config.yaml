@@ -38,6 +38,11 @@ dotfiles:
   d_bashrc.d:
     dst: ~/.bashrc.d
     src: bashrc.d
+  d_kubeconfig:
+    dst: ~/.kube/config.d
+    src: kube_config.d
+    trans_read: gpgdir
+    trans_write: gpgdir
   d_bin:
     dst: ~/bin
     src: bin
@@ -203,7 +208,7 @@ profiles:
   idealo:
     dotfiles:
     - d_config_autorandr
-    - f_kube_config
+    - d_kubeconfig
     include:
     - common
     - linux
@@ -238,6 +243,7 @@ profiles:
     - f_docker_config.json
 trans_write:
   gpg: gpg -qaer 0x16142EF211C6D2340A0B08F0CD7583FE6D62D2A9 -o- {0} > {1}
+  gpgdir: tar -c -C {0} . | gpg -qaer 0x16142EF211C6D2340A0B08F0CD7583FE6D62D2A9 -o {1}
 variables:
   git_email: info@tvollmer.de
   git_user: 5nafu
@@ -245,3 +251,4 @@ variables:
   WebBrowser: custom-WebBrowser
 trans_read:
   gpg: gpg -q --for-your-eyes-only --no-tty -d {0} > {1}
+  gpgdir: mkdir {1} && gpg -q --for-your-eyes-only --no-tty -d {0} |tar -x -C {1}
