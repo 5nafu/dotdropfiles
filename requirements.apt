@@ -172,6 +172,7 @@ packagelist \
   "ncdu" \
   "ncftp" \
   "network-manager-openconnect-gnome" \
+  "net-tools" \
   "nfs-common" \
   "nmap" \
   "ntpdate" \
