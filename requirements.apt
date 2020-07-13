@@ -171,7 +171,7 @@ packagelist \
   "mtr" \
   "multitail" \
   "mysql-client" \
-  "mysql-workbench" \
+  "mysql-workbench-community" \
   "ncdu" \
   "ncftp" \
   "network-manager-openconnect-gnome" \
