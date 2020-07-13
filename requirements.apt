@@ -41,7 +41,8 @@ function packagelist {
   local input_packages=$@
   local install_packages=()
   for pkg in $input_packages; do
-    dpkg --force-confnew -s "$pkg" > "$TMP_APTFILE_LOGFILE" 2>&1 && log_info "${APTFILE_CYAN}[OK]${APTFILE_COLOR_OFF} package $pkg" && continue
+    #dpkg --force-confnew -s "$pkg" > "$TMP_APTFILE_LOGFILE" 2>&1 && log_info "${APTFILE_CYAN}[OK]${APTFILE_COLOR_OFF} package $pkg" && continue
+    dpkg-query -f '${db:Status-Abbrev}\n' -W "$pkg" 2>>$TMP_APTFILE_LOGFILE |grep -q "ii" && log_info "${APTFILE_CYAN}[OK]${APTFILE_COLOR_OFF} package $pkg" && continue
     install_packages+=($pkg)
   done
   if [[ ${#install_packages[@]} -gt 0 ]]; then
@@ -199,7 +200,6 @@ packagelist \
   "samba-common" \
   "scanbd" \
   "scdaemon" \
-  "sgabios" \
   "signal-desktop" \
   "smartmontools" \
   "solaar" \
