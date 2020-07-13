@@ -215,10 +215,17 @@ class DuplicateFinder(object):
         with Database(self.databasefile, readonly=True, verbose=self.verbose) as database:
             existing_files = database.get_multiple_files_by_name(self.filelist)
             self.silent or print("Found {0} existing files in DB".format(len(existing_files)))
+        if not recreate_hash:
+            work_filelist = self.filelist - existing_files.keys()
+            if not self.verbose and not self.silent:
+                print("Removed files already in db from filelist as hashes should not be recreated.")
+                print("{} files left to handle.".format(len(work_filelist)))
+        else:
+            work_filelist = self.filelist
         if not self.verbose and not self.silent:
             print("* = existing, . = added, ! = updated")
             print("      0 ", end='')
-        for name in self.filelist:
+        for name in work_filelist:
             count += 1
             self.debug("checking '{0}'".format(name))
             if (recreate_hash or
