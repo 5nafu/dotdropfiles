@@ -3,6 +3,7 @@
 OPTIND=1 
 daemonize=""
 display="-display gtk"
+monitor="-monitor vc"
 persistent="-snapshot"
 enable_cdrom=false
 cdrom=""
@@ -40,6 +41,10 @@ generate_usb_device() {
     fi
 }
 
+get_unused_port() {
+    python -c 'import socket; s=socket.socket(); s.bind(("", 0)); print(s.getsockname()[1]); s.close()'
+}
+
 while getopts "h?dtcvpD:C:b:u:" opt; do
     case "$opt" in
     h|\?)
@@ -49,8 +54,15 @@ while getopts "h?dtcvpD:C:b:u:" opt; do
     d)  daemonize="-daemonize"
         ;;
     t)  display="-curses"
+        monitorport=$(get_unused_port)
+        echo -e "To connect to the QEMU-Monitor run\ntelnet 127.0.0.1 $monitorport"
+        read -p "Press ENTER to start the VM"
+        monitor="-monitor telnet:127.0.0.1:$monitorport,server,nowait"
         ;;
-    v)  display="-vnc 127.0.0.1:8"
+    v)  display="-vnc :0,to=99"
+        monitorport=$(get_unused_port)
+        echo -e "To connect to the QEMU-Monitor run\ntelnet 127.0.0.1 $monitorport"
+        monitor="-monitor telnet:127.0.0.1:$monitorport,server,nowait"
         ;;
     p)  persistent=""
         ;;
@@ -83,6 +95,8 @@ fi
 if $enable_cdrom; then
     cdrom="-drive file=$CD,readonly=on,format=raw,media=cdrom"
 fi
+    # -net nic,model=virtio \
+    # -net tap \
 sudo /usr/bin/kvm \
     -boot order=$order \
     -cpu Haswell-noTSX-IBRS \
@@ -94,22 +108,19 @@ sudo /usr/bin/kvm \
     -device virtio-blk-pci,scsi=off,bus=pci.0,addr=0x7,drive=drive-virtio-disk0,id=virtio-disk0 \
     -drive file=$DISK,if=none,cache=writeback,id=drive-virtio-disk0 \
     $cdrom \
-    -enable-kvm \
     -global kvm-pit.lost_tick_policy=delay \
     -global PIIX4_PM.disable_s3=1 \
     -global PIIX4_PM.disable_s4=1 \
     -m 8192 \
     -machine pc-i440fx-artful,accel=kvm,usb=off,vmport=off,dump-guest-core=off \
-    -monitor telnet:127.0.0.1:4444,server,nowait \
+    $monitor \
     -name Buildtest \
-    -net nic,macaddr=52:54:00:1a:12:be,model=virtio \
-    -net tap \
+    -netdev tap,id=n0 -device e1000,netdev=n0,mac=$(printf 'DE:AD:BE:EF:%02X:%02X\n' $((RANDOM%256)) $((RANDOM%256))) \
     -nodefaults \
     -rtc base=utc \
     -smp 6,sockets=6,cores=1,threads=1 \
     -device usb-tablet \
-    -vga cirrus \
-    -uuid 00dbd6c7-adfe-8d88-7ab9-e7e0f21df077 \
+    -vga std \
     $persistent \
     $display \
     $daemonize \
