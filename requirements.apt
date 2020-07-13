@@ -45,7 +45,7 @@ function packagelist {
     install_packages+=($pkg)
   done
   if [[ ${#install_packages[@]} -gt 0 ]]; then
-    apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" -qq -y --force-yes install ${install_packages[@]}
+    apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" -qq -y --allow-unauthenticated --allow-downgrades --allow-change-held-packages install ${install_packages[@]}
     [[ $? -eq 0 ]] || log_fail "${APTFILE_RED}[FAIL]${APTFILE_COLOR_OFF} packages ${install_packages[@]}"
     log_info "${APTFILE_GREEN}[NEW]${APTFILE_COLOR_OFF} packages ${install_packages[@]}"
   fi
