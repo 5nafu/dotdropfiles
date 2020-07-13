@@ -1,4 +1,6 @@
 if [[ -d ~/git/kubectx ]]; then
+    # Add kubectx files to PATH
+    export PATH=$PATH:~/git/kubectx
     # Source bash completion for kubectx
     source ~/git/kubectx/completion/kubectx.bash
     source ~/git/kubectx/completion/kubens.bash
