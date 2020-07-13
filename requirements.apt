@@ -101,7 +101,7 @@ add-key-from-url-with-timeout 5 https://packagecloud.io/github/git-lfs/gpgkey
 repository_file "git-lfs" "https://packagecloud.io/github/git-lfs/${lsb_id,,}/ main"
 
 add-key-from-url-with-timeout 5 "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xa4a9406876fcbd3c456770c88c718d3b5072e1f5"
-repository_file "mysql" "http://repo.mysql.com/apt/${lsb_id,,} $(lsb_release -sc) mysql-tools"
+repository_file "mysql" "http://repo.mysql.com/apt/${lsb_id,,} mysql-tools"
 
 
 # For mkusb
