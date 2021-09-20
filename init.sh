@@ -5,7 +5,7 @@ TARGETDIR=${1:-$HOME/git/dotdropfiles}
 REPOSITORY=5nafu/dotdropfiles
 
 read -p "Install packages? (Y/n)" -t 10 INSTALL_PACKAGES
-if [[ "${INSTALL_PACKAGES,,}" = "y" ]] || [[ -z "${INSTALL_PACKAGES}" ]]; then
+if [[ "$INSTALL_PACKAGES" != "${INSTALL_PACKAGES#[Yy]}" ]] || [[ -z "${INSTALL_PACKAGES}" ]]; then
     if type curl >/dev/null 2>&1; then
         dl_cmd="curl"
         dl_options="-so"
@@ -63,7 +63,7 @@ sudo -H pip3 install -r dotdrop/requirements.txt
 ./dotdrop/bootstrap.sh
   
 read -p "Install dotfiles? (y/N)" -t 10 INSTALL
-if [[ "${INSTALL,,}" = "y" ]]; then
+if [[ "$INSTALL" != "${INSTALL#[Yy]}" ]]; then
     read -p "which profile should be installed: " -i $(hostname -s) -t 10 DOTFILE_PROFILE
     ./dotdrop.sh install --cfg=$TARGETDIR/config.yaml -p $DOTFILE_PROFILE
     LOCALBASHRC=~/.bashrc.local
@@ -73,17 +73,17 @@ if [[ "${INSTALL,,}" = "y" ]]; then
 fi
 
 read -p "Reset remote of dotfiles repository to ssh? (Y/n)" -t 10 RESET_REPO
-if [[ "${RESET_REPO,,}" = "y" ]] || [[ -z "${RESET_REPO}" ]]; then
+if [[ "$RESET_REPO" != "${RESET_REPO#[Yy]}" ]] || [[ -z "${RESET_REPO}" ]]; then
     git remote set-url origin git@github.com:$REPOSITORY.git
 fi
 
 read -p "Install Firefox Add-Ons? (Y/n)" -t 10 INSTALL_FF_ADDON
-if [[ "${INSTALL_FF_ADDON,,}" = "y" ]] || [[ -z "${INSTALL_FF_ADDON}" ]]; then
+if [[ "$INSTALL_FF_ADDON" != "${INSTALL_FF_ADDON#[Yy]}" ]] || [[ -z "${INSTALL_FF_ADDON}" ]]; then
     ./dotfiles/bin/install_firefox_addon -f ff_extensions.lst 
 fi
 
 read -p "Install Chrome Add-Ons? (Y/n)" -t 10 INSTALL_CHROME_ADDON
-if [[ "${INSTALL_CHROME_ADDON,,}" = "y" ]] || [[ -z "${INSTALL_CHROME_ADDON}" ]]; then
+if [[ "$INSTALL_CHROME_ADDON" != "${INSTALL_CHROME_ADDON#[Yy]}" ]] || [[ -z "${INSTALL_CHROME_ADDON}" ]]; then
     ./dotfiles/bin/install_chrome_addon -f chrome_extensions.lst 
 fi
 
