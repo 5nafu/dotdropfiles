@@ -17,9 +17,20 @@ if [[ "${INSTALL_PACKAGES,,}" = "y" ]] || [[ -z "${INSTALL_PACKAGES}" ]]; then
         exit 1
     fi
 
-    if [[ "$OSTYPE" =~ ^darwin ]] ; then 
-        echo "WARNING: Install of dependencies not implemented."
-        echo "Continuing"
+    if [[ "$OSTYPE" =~ ^darwin ]] ; then
+        if ! type brew &>/dev/null; then
+            echo "Installing  Homebrew"
+            /bin/bash -c "$($dl_cmd -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+            brew cask info this-is-somewhat-annoying 2>/dev/null
+        fi
+        if ! type mas &>/dev/null; then
+            echo "Installing AppStore Cli"
+            brew install mas
+        fi
+        if $dl_cmd $dl_options Brewfile https://raw.githubusercontent.com/$REPOSITORY/master/Brewfile; then
+            brew bundle --file ./Brewfile
+            rm ./Brewfile
+        fi
     elif type lsb_release &>/dev/null && [[ $(lsb_release -s -i) =~ (Debian|Ubuntu) ]] ; then
         if $dl_cmd $dl_options requirements.apt https://raw.githubusercontent.com/$REPOSITORY/master/requirements.apt; then
     	$dl_cmd $dl_options aptfile https://raw.githubusercontent.com/seatgeek/bash-aptfile/master/bin/aptfile
