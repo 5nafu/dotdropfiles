@@ -183,6 +183,9 @@ dotfiles:
   f_config_xfce4_xfconf_xfce-perchannel-xml_xsettings.xml:
     src: config/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml
     dst: ~/.config/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml
+  f_config_redshift.conf:
+    src: config/redshift.conf
+    dst: ~/.config/redshift.conf
 profiles:
   common:
     dotfiles:
@@ -241,6 +244,7 @@ profiles:
     - f_vim_colors_tomorrow-night.vim
     - f_ssh_authorized_keys
     - f_docker_config.json
+    - f_config_redshift.conf
 trans_write:
   gpg: gpg -qaer 0x16142EF211C6D2340A0B08F0CD7583FE6D62D2A9 -o- {0} > {1}
   gpgdir: tar -c -C {0} . | gpg -qaer 0x16142EF211C6D2340A0B08F0CD7583FE6D62D2A9 -o {1}

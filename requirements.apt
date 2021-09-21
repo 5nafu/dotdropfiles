@@ -197,6 +197,8 @@ packagelist \
   "qemu-utils" \
   "qemu-system-gui" \
   "qrencode" \
+  "redshift" \
+  "redshift-gtk" \
   "samba-common" \
   "scanbd" \
   "scdaemon" \
