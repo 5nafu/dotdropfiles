@@ -57,6 +57,8 @@ dotfiles:
   f_aws_config:
     dst: ~/.aws/config
     src: aws/config
+    trans_read: gpg
+    trans_write: gpg
   f_base.cfg:
     dst: ~/.config/terminology/config/standard/base.cfg
     src: config/terminology/config/standard/base.cfg
