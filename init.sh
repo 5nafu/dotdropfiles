@@ -31,6 +31,7 @@ if [[ "$INSTALL_PACKAGES" != "${INSTALL_PACKAGES#[Yy]}" ]] || [[ -z "${INSTALL_P
             brew bundle --file ./Brewfile
             rm ./Brewfile
         fi
+        # TODO: Install Lightroom & MS Teams
     elif type lsb_release &>/dev/null && [[ $(lsb_release -s -i) =~ (Debian|Ubuntu) ]] ; then
         if $dl_cmd $dl_options requirements.apt https://raw.githubusercontent.com/$REPOSITORY/master/requirements.apt; then
     	$dl_cmd $dl_options aptfile https://raw.githubusercontent.com/seatgeek/bash-aptfile/master/bin/aptfile
@@ -64,7 +65,8 @@ sudo -H pip3 install -r dotdrop/requirements.txt
   
 read -p "Install dotfiles? (y/N)" -t 10 INSTALL
 if [[ "$INSTALL" != "${INSTALL#[Yy]}" ]]; then
-    read -p "which profile should be installed: " -i $(hostname -s) -t 10 DOTFILE_PROFILE
+    read -p "which profile should be installed: (Default: $(hostname -s))" -t 10 DOTFILE_PROFILE
+    [[ -z "$DOTFILE_PROFILE" ]] && DOTFILE_PROFILE=$(hostname -s)
     ./dotdrop.sh install --cfg=$TARGETDIR/config.yaml -p $DOTFILE_PROFILE
     LOCALBASHRC=~/.bashrc.local
     grep -q "^export DOTDROP_PROFILE=" $LOCALBASHRC 2>/dev/null \
