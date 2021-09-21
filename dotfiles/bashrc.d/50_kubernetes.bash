@@ -1,6 +1,4 @@
 if [[ -d ~/git/kubectx ]]; then
-    # Add kubectx files to PATH
-    export PATH=$PATH:~/git/kubectx
     # Source bash completion for kubectx
     source ~/git/kubectx/completion/kubectx.bash
     source ~/git/kubectx/completion/kubens.bash
@@ -11,6 +9,7 @@ if [[ -d ~/git/kubectx ]]; then
     complete -F __start_kubectl k
     complete -F _kube_contexts  kx
     complete -F _kube_namespaces kn
+    export PATH="$PATH:~/git/kubectx"
 fi
 
 if [[ -d $KREW_ROOT ]] || [[ -d $HOME/.krew ]]; then
@@ -23,3 +22,8 @@ if [ -f "$HOME/.local/bin/google-cloud-sdk/path.bash.inc" ]; then . "$HOME/.loca
 # The next line enables shell command completion for gcloud.
 if [ -f "$HOME/.local/bin/google-cloud-sdk/completion.bash.inc" ]; then . "$HOME/.local/bin/google-cloud-sdk/completion.bash.inc"; fi
 
+function get_bearer {
+    TOKEN=$(kubectl get secrets -o jsonpath="{.items[?(@.metadata.annotations['kubernetes\.io/service-account\.name']=='argo')].data.token}"|base64 --decode )
+    echo "Bearer $TOKEN" |xclip -f
+    echo -e "\n\nToken copied to 'Middle Click'"
+}
