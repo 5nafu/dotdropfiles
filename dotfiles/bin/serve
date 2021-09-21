@@ -1,10 +1,10 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import sys, os
 import SimpleHTTPServer
 args = sys.argv[1:]
 
 if len(args) and (args[0] == "-h" or args[0] == "--help"):
-  print """
+  print("""
 Serve a file (or the current directory)
 http://benalman.com/
 
@@ -16,7 +16,7 @@ directory) with the default web browser.
 
 Copyright (c) 2012 "Cowboy" Ben Alman
 Licensed under the MIT license.
-http://benalman.com/about/license/""" % os.path.basename(sys.argv[0])
+http://benalman.com/about/license/""" % os.path.basename(sys.argv[0]))
   sys.exit()
 
 # Get port, if specified.
