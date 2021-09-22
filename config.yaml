@@ -11,6 +11,7 @@ actions:
     install_vim_plugins: vim +PlugUpgrade +PlugUpdate +qall
     osx_restart_preferences: killall cfprefsd                                        
     osx_restart_dock: killall Dock
+    run_macos_sh: ~/bin/macos.sh
 config:
   backup: false
   banner: true
@@ -50,6 +51,8 @@ dotfiles:
     dst: ~/bin
     src: bin
     chmod: '755'
+    actions:
+    - run_macos_sh
   d_config_autorandr:
     dst: ~/.config/autorandr
     src: config/autorandr
