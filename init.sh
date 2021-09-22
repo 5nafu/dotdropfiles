@@ -60,12 +60,13 @@ cd $TARGETDIR
 git submodule update --init --recursive
 git submodule update --remote dotdrop
 
+echo "Enter sudo password for requirement installing of dotdrop..."
 sudo -H pip3 install -r dotdrop/requirements.txt
 ./dotdrop/bootstrap.sh
   
 read -p "Install dotfiles? (y/N)" -t 10 INSTALL
 if [[ "$INSTALL" != "${INSTALL#[Yy]}" ]]; then
-    read -p "which profile should be installed: (Default: $(hostname -s))" -t 10 DOTFILE_PROFILE
+    read -p "which profile should be installed (Default: $(hostname -s)): " -t 10 DOTFILE_PROFILE
     [[ -z "$DOTFILE_PROFILE" ]] && DOTFILE_PROFILE=$(hostname -s)
     ./dotdrop.sh install --cfg=$TARGETDIR/config.yaml -p $DOTFILE_PROFILE
     LOCALBASHRC=~/.bashrc.local
