@@ -9,8 +9,6 @@ actions:
     enable_bash_it: ln -s {{@@ _dotdrop_dotpath @@}}/bash_it_enabled {{@@ _dotdrop_dotpath
       @@}}/bash_it/enabled
     install_vim_plugins: vim +PlugUpgrade +PlugUpdate +qall
-    osx_restart_preferences: killall cfprefsd                                        
-    osx_restart_dock: killall Dock
     run_macos_sh: ~/bin/macos.sh
 config:
   backup: false
@@ -197,12 +195,6 @@ dotfiles:
   f_config_redshift.conf:
     src: config/redshift.conf
     dst: ~/.config/redshift.conf
-  f_dock.plist:
-    src: config/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml
-    dst: ~/Library/Preferences/com.apple.dock.plist
-    actions:
-    - osx_restart_preferences                                       
-    - osx_restart_dock
 profiles:
   common:
     dotfiles:
@@ -266,7 +258,6 @@ profiles:
       font_directory: ~/.local/share/fonts
   OSX:
     dotfiles:
-    - f_dock.plist
     - d_fonts
     include:
     - common
