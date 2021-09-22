@@ -55,7 +55,7 @@ dotfiles:
     dst: ~/.config/autorandr
     src: config/autorandr
   d_fonts:
-    dst: "{{@@ git_user @@}}"
+    dst: "{{@@ font_directory @@}}"
     src: local/share/fonts
   f_aws_config:
     dst: ~/.aws/config
