@@ -389,7 +389,7 @@ endif
 if (has("termguicolors"))
   set termguicolors
 endif
-colorscheme Tomorrow-Night
+colorscheme Tomorrow-Night-Bright
 if (filereadable($HOME . "/.vim/plugged/vim-hybrid-material/colors/hybrid_material.vim")) && ((has("nvim")) || (has("termguicolors")))
   colorscheme hybrid_material
 endif
