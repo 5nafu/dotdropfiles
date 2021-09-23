@@ -1,0 +1,25 @@
+#!/bin/bash
+# Filename: cp-metadata
+
+myecho=
+src_path="$1"
+dst_path="$2"
+
+find "$src_path" |
+  while read src_file; do
+    dst_file="$dst_path${src_file#$src_path}"
+
+    #echo "Copy $src_file -> $dst_file"
+
+    # permissions
+    perms=$(stat -f "%p" "$src_file")
+    $myecho chmod $perms "$dst_file"
+
+    # Ownership
+    ownership=$(stat -f "%u:%g" "$src_file")
+    $myecho chown $ownership "$dst_file"
+
+    # Time
+    $myecho touch -r "$src_file" "$dst_file"
+  done
+
