@@ -2,7 +2,6 @@ actions:
   post:
     chmod_gnupg: chmod 700 ~/.gnupg
     chmod_ssh: chmod 700 ~/.ssh
-    code_install_sync: ./dotfiles/bin/install_settings-sync_extension.sh 42bac981cb8cd55e1a98f6eeab0ed297
     gpg-card-import: read -p "insert your keyfob and press enter" ready && gpg --card-status
     gpg-key-import: gpg --keyserver https://key.tvollmer.de --recv-keys 0xCD7583FE6D62D2A9
       && echo "16142EF211C6D2340A0B08F0CD7583FE6D62D2A9:6:" | gpg --import-ownertrust
@@ -125,13 +124,6 @@ dotfiles:
     - chmod_ssh
     dst: ~/.gnupg/sshcontrol
     src: gnupg/sshcontrol
-  f_syncLocalSettings.json:
-    actions:
-    - code_install_sync
-    dst: ~/.config/Code/User/syncLocalSettings.json
-    src: config/Code/User/syncLocalSettings.json
-    trans_read: gpg
-    trans_write: gpg
   f_tmux.conf:
     dst: ~/.tmux.conf
     src: tmux.conf
@@ -195,7 +187,6 @@ profiles:
     - d_kubectx
     - d_bashrc.d
     - f_bashrc
-    - f_syncLocalSettings.json
     - f_irssi_config
     - f_bash_profile
     - f_dir_colors
@@ -248,7 +239,7 @@ variables:
   git_email: info@tvollmer.de
   git_user: 5nafu
   MailReader: thunderbird
-  WebBrowser: custom-WebBrowser
+  WebBrowser: google-chrome
 trans_read:
   gpg: gpg -q --for-your-eyes-only --no-tty -d {0} > {1}
   gpgdir: mkdir {1} && gpg -q --for-your-eyes-only --no-tty -d {0} |tar -x -C {1}

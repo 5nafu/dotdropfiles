@@ -39,6 +39,9 @@ fi
 
 #TC
 alias tclocate="locate -d /media/veracrypt1/locate/locate.db"
+alias tcfind="find_duplicates.py check -f /media/veracrypt1/locate/hashes.db"
+alias tcdupes="find_duplicates.py duplicates -f /media/veracrypt1/locate/hashes.db"
+
 
 # Recursively delete `.DS_Store` files
 alias dsstore="find . -name '*.DS_Store' -type f -ls -delete"

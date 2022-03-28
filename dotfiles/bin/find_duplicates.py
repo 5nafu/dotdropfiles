@@ -75,6 +75,7 @@ class Database(object):
         self.db.execute('SELECT filename from filehashes where hash=?', (checksum,))
         results = [row[0] for row in self.db.fetchall()]
         self.debug("get_files got '{}' files".format(len(results)))
+        self.debug(results)
         return results
 
     def get_multiple_files_by_name(self, filelist):
@@ -155,10 +156,11 @@ class DuplicateFinder(object):
     class CouldNotHash(Exception):
         pass
 
-    def __init__(self, database, verbose, silent):
+    def __init__(self, database, verbose, silent, sha256):
         self.databasefile = database
         self.verbose = verbose
         self.silent = silent
+        self.sha256 = sha256
         self.filelist = set()
 
     def debug(self, message):
@@ -167,15 +169,18 @@ class DuplicateFinder(object):
 
     def generate_hash(self, filename):
         BUF_SIZE = 65536
-        sha1 = hashlib.sha1()
+        if self.sha256:
+            sha = hashlib.sha256()
+        else:
+            sha = hashlib.sha1()
         try:
             with open(filename, 'rb') as filestream:
                 while True:
                     data = filestream.read(BUF_SIZE)
                     if not data:
                         break
-                    sha1.update(data)
-            return sha1.hexdigest()
+                    sha.update(data)
+            return sha.hexdigest()
         except IOError as e:
             raise self.CouldNotHash("Could not hash '{0}': {1}".format(filename, e))
 
@@ -212,6 +217,9 @@ class DuplicateFinder(object):
         existing = 0
         added = 0
         updated = 0
+        if not os.path.exists(self.databasefile):
+            with Database(self.databasefile, readonly=False, verbose=self.verbose) as database:
+                self.debug("Database file does not exist, creating")
         with Database(self.databasefile, readonly=True, verbose=self.verbose) as database:
             existing_files = database.get_multiple_files_by_name(self.filelist)
             self.silent or print("Found {0} existing files in DB".format(len(existing_files)))
@@ -331,6 +339,7 @@ def parse_args():
     verbosity_parser.add_argument("-s", "--silent", help="Output only errors", action='store_true')
 
     parent_parser.add_argument("-f", "--file", help="Store SHA1 in this file", required=True, metavar="SHA1-FILE", type=u)
+    parent_parser.add_argument("--sha256", help="Store SHA256 instead of SHA1", action="store_true")
     subparsers = parser.add_subparsers(dest='action')
 
     duplicates_parser = subparsers.add_parser('duplicates', help="Get all duplicates", parents=[parent_parser])
@@ -340,7 +349,7 @@ def parse_args():
     cleanup_parser.add_argument("-e", "--exclude", help="Exclude this file/paths with this regex", action='append', default=[], type=b)
 
     check_parser = subparsers.add_parser('check', help="Check the file for duplicates in the SHA1 Store", parents=[parent_parser])
-    check_parser.add_argument('target')
+    check_parser.add_argument('target', type=b)
 
     update_parser = subparsers.add_parser('update', help="Update the SHA1 file with date from the Directory", parents=[parent_parser])
     update_parser.add_argument('directory', type=b)
@@ -354,7 +363,7 @@ def parse_args():
 
 def main():
     args = parse_args()
-    finder = DuplicateFinder(args.file, args.verbose, args.silent)
+    finder = DuplicateFinder(args.file, args.verbose, args.silent, args.sha256)
 
     if args.action == "update":
         finder.generate_filelist(args.directory, args.exclude)
@@ -365,6 +374,9 @@ def main():
             finder.print_all_duplicates()
 
     if args.action == "check":
+        if not args.target.startswith(b'/'):
+            import os
+            args.target = os.path.abspath(args.target)
         checksum = finder.generate_hash(args.target)
         finder.print_duplicates(args.target, checksum)
 

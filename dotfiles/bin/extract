@@ -54,14 +54,14 @@ OUT_OPT=""
 case "$extension" in
     7z)
         if $samedir; then
-            7z x $password -- "$realarchive" && success=true
+            7z x -bb1 $password -- "$realarchive" && success=true
         else
-            7z x $password -o"$output" -- "$realarchive" && success=true
+            7z x -bb1 $password -o"$output" -- "$realarchive" && success=true
         fi
         ;;
     rar)
         OWD=$(pwd)
-        if $samedir; then
+        if ! $samedir; then
             mkdir -p "$output"
             cd "$output"
         fi

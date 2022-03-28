@@ -111,7 +111,7 @@ sudo /usr/bin/kvm \
     -global kvm-pit.lost_tick_policy=delay \
     -global PIIX4_PM.disable_s3=1 \
     -global PIIX4_PM.disable_s4=1 \
-    -m 8192 \
+    -m 4096 \
     -machine pc-i440fx-artful,accel=kvm,usb=off,vmport=off,dump-guest-core=off \
     $monitor \
     -name Buildtest \
