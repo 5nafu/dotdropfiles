@@ -9,6 +9,7 @@ to the original.
 """
 
 import sys
+import argparse
 import json
 import getpass
 import string
@@ -63,28 +64,41 @@ def set_password(user_to_change, old_password, new_password, dryrun=False):
         if answer.ok is not True:
             error_api_call(answer.content)
 
-
-
-def main():
-    """Executed when the script is called directly"""
-    user_to_change = input("Username: ")
-    password = getpass.getpass('Password: ')
-
+def rechange_password_multiple(username, password, count):
     old_password = password
-    for count in range(1, 10):
+    for run in range(1, count):
         letters = ''.join(random.choices(string.ascii_letters, k=10))
         digits = ''.join(random.choices(string.digits, k=2))
         punctuation = ''.join(random.choices(string.punctuation, k=2))
         new_password = letters + digits + punctuation
-        print("setting new password ({}/10): {}".format(count, new_password))
+        print("setting new password ({}/{}): {}".format(run,count, new_password))
         set_password(user_to_change, old_password, new_password)
         old_password = new_password
         print(" success")
 
-    print("Resetting Password to original")
-    set_password(user_to_change, old_password, password)
-    print(" success")
+def main():
+    """Executed when the script is called directly"""
+    parser = argparse.ArgumentParser(description='(Re)set passwords for user')
+    parser.add_argument('--single', '-s', action='store_true',
+                        help='only change password once')
+    parser.add_argument('--username', '-u',
+                        help='Username to change')
 
+    args = parser.parse_args()
+    if args.username:
+        user_to_change = args.username
+    else:
+        user_to_change = input("Username: ")
+    if args.single:
+        old_password = getpass.getpass('Old Password: ')
+        new_password = getpass.getpass('New Password: ')
+        set_password(user_to_change, old_password, new_password)
+    else:
+        password = getpass.getpass('Password: ')
+        rechange_password_multiple(user_to_change, password, 10)
+        print("Resetting Password to original")
+        set_password(user_to_change, old_password, password)
+        print(" success")
 
 if __name__ == '__main__':
     main()

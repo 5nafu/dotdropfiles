@@ -8,6 +8,7 @@ actions:
     enable_bash_it: ln -s {{@@ _dotdrop_dotpath @@}}/bash_it_enabled {{@@ _dotdrop_dotpath
       @@}}/bash_it/enabled
     install_vim_plugins: vim +PlugUpgrade +PlugUpdate +qall
+    run_macos_sh: ~/bin/macos.sh
 config:
   backup: false
   banner: true
@@ -42,18 +43,24 @@ dotfiles:
     src: kube_config.d
     trans_read: gpgdir
     trans_write: gpgdir
+    chmod: '775'
   d_bin:
     dst: ~/bin
     src: bin
+    chmod: '755'
+    actions:
+    - run_macos_sh
   d_config_autorandr:
     dst: ~/.config/autorandr
     src: config/autorandr
   d_fonts:
-    dst: ~/.local/share/fonts
+    dst: "{{@@ font_directory @@}}"
     src: local/share/fonts
   f_aws_config:
     dst: ~/.aws/config
     src: aws/config
+    trans_read: gpg
+    trans_write: gpg
   f_base.cfg:
     dst: ~/.config/terminology/config/standard/base.cfg
     src: config/terminology/config/standard/base.cfg
@@ -90,6 +97,7 @@ dotfiles:
     - gpg-card-import
     dst: ~/.gnupg/gpg.conf
     src: gnupg/gpg.conf
+    chmod: '644'
   f_irssi_config:
     dst: ~/.irssi/config
     src: irssi/config
@@ -167,6 +175,7 @@ dotfiles:
     dst: ~/.docker/config.json
     trans_read: gpg
     trans_write: gpg
+    chmod: '600'
   f_arm_armrc:
     src: arm/armrc
     dst: ~/.arm/armrc
@@ -175,6 +184,9 @@ dotfiles:
   f_config_xfce4_xfconf_xfce-perchannel-xml_xsettings.xml:
     src: config/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml
     dst: ~/.config/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml
+  f_config_redshift.conf:
+    src: config/redshift.conf
+    dst: ~/.config/redshift.conf
 profiles:
   common:
     dotfiles:
@@ -232,9 +244,20 @@ profiles:
     - f_vim_colors_tomorrow-night.vim
     - f_ssh_authorized_keys
     - f_docker_config.json
+    - f_config_redshift.conf
+    variables:
+      font_directory: ~/.local/share/fonts
+  OSX:
+    dotfiles:
+    - d_fonts
+    include:
+    - common
+    variables:
+      font_directory: ~/Library/Fonts
 trans_write:
   gpg: gpg -qaer 0x16142EF211C6D2340A0B08F0CD7583FE6D62D2A9 -o- {0} > {1}
-  gpgdir: tar -c -C {0} . | gpg -qaer 0x16142EF211C6D2340A0B08F0CD7583FE6D62D2A9 -o {1}
+  gpgdir: tar -c -C {0} . | gpg -qaer 0x16142EF211C6D2340A0B08F0CD7583FE6D62D2A9 -o
+    {1}
 variables:
   git_email: info@tvollmer.de
   git_user: 5nafu

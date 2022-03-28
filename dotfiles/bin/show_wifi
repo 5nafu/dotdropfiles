@@ -1,0 +1,2 @@
+#!/bin/bash
+nmcli -f IN-USE,SSID,CHAN,FREQ,RATE,SIGNAL,BARS,SECURITY,WPA-FLAGS,RSN-FLAGS dev wifi list --rescan yes

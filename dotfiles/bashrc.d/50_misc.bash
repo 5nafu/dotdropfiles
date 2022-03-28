@@ -64,7 +64,7 @@ alias gp-all='eachdir git push'
 alias gs-all='eachdir git status'
 
 # Add bin directory
-export PATH="$HOME/bin:$PATH"
+export PATH="$HOME/bin:$HOME/.local/bin:$PATH:$PATH"
 
 # create colorized box for given strings
 function box_out() {
@@ -81,3 +81,9 @@ function box_out() {
 function title() {
     echo -e '\033]2;'$@'\007'
 }
+
+# Some Ansible shortcuts
+alias aencrypt="ansible-vault encrypt --vault-password-file=\$(git rev-parse --show-toplevel)/password.txt"
+alias adecrypt="ansible-vault decrypt --vault-password-file=\$(git rev-parse --show-toplevel)/password.txt"
+
+alias vssh="vagrant ssh"
