@@ -5,9 +5,10 @@ actions:
     gpg-card-import: read -p "insert your keyfob and press enter" ready && gpg --card-status
     gpg-key-import: gpg --keyserver https://key.tvollmer.de --recv-keys 0xCD7583FE6D62D2A9
       && echo "16142EF211C6D2340A0B08F0CD7583FE6D62D2A9:6:" | gpg --import-ownertrust
-    enable_bash_it: ln -s {{@@ _dotdrop_dotpath @@}}/bash_it_enabled {{@@ _dotdrop_dotpath @@}}/bash_it/enabled
+    enable_bash_it: ln -s {{@@ _dotdrop_dotpath @@}}/bash_it_enabled {{@@ _dotdrop_dotpath
+      @@}}/bash_it/enabled
     install_vim_plugins: vim +PlugUpgrade +PlugUpdate +qall
-    run_macos_sh: {{@@ macos_config_script @@}}
+    run_macos_sh: '{{@@ macos_config_script @@}}'
 config:
   backup: false
   banner: true
@@ -19,20 +20,20 @@ config:
   showdiff: false
   workdir: ~/.config/dotdrop
   link_on_import: nolink
-  minversion: 0.29.5
+  minversion: 1.15.0
 dotfiles:
   d_autostart:
     dst: ~/.config/autostart
     src: config/autostart
   d_bash_it:
     dst: ~/.bash_it
-    link: link
+    link: absolute
     src: bash_it
     actions:
     - enable_bash_it
   d_kubectx:
     dst: ~/.kubectx
-    link: link
+    link: absolute
     src: kubectx
   d_bashrc.d:
     dst: ~/.bashrc.d
@@ -40,9 +41,9 @@ dotfiles:
   d_kubeconfig:
     dst: ~/.kube/config.d
     src: kube_config.d
-    trans_read: gpgdir
-    trans_write: gpgdir
     chmod: '775'
+    trans_install: gpgdir
+    trans_update: gpgdir
   d_bin:
     dst: ~/bin
     src: bin
@@ -53,13 +54,14 @@ dotfiles:
     dst: ~/.config/autorandr
     src: config/autorandr
   d_fonts:
-    dst: "{{@@ font_directory @@}}"
+    dst: '{{@@ font_directory @@}}'
     src: local/share/fonts
   f_aws_config:
     dst: ~/.aws/config
     src: aws/config
-    trans_read: gpg
-    trans_write: gpg
+    trans_install: gpg
+    trans_update: gpg
+    chmod: '664'
   f_base.cfg:
     dst: ~/.config/terminology/config/standard/base.cfg
     src: config/terminology/config/standard/base.cfg
@@ -96,44 +98,49 @@ dotfiles:
     - gpg-card-import
     dst: ~/.gnupg/gpg.conf
     src: gnupg/gpg.conf
-    chmod: '644'
+    chmod: '600'
   f_irssi_config:
     dst: ~/.irssi/config
     src: irssi/config
-    trans_read: gpg
-    trans_write: gpg
+    trans_install: gpg
+    trans_update: gpg
   f_ssh_config:
     actions:
     - chmod_ssh
     dst: ~/.ssh/config
     src: ssh/config
+    chmod: '700'
   f_ssh_config_01_global:
     actions:
     - chmod_ssh
     dst: ~/.ssh/config.d/01_global
     src: ssh/config.d/01_global
+    chmod: '600'
   f_ssh_config_10_idealo:
     actions:
     - chmod_ssh
     dst: ~/.ssh/config.d/10_idealo
     src: ssh/config.d/10_idealo
-    trans_read: gpg
-    trans_write: gpg
+    trans_install: gpg
+    trans_update: gpg
   f_ssh_config_10_tvollmer:
     actions:
     - chmod_ssh
     dst: ~/.ssh/config.d/10_tvollmer
     src: ssh/config.d/10_tvollmer
-    trans_read: gpg
-    trans_write: gpg
+    trans_install: gpg
+    trans_update: gpg
+    chmod: '600'
   f_sshcontrol:
     actions:
     - chmod_ssh
     dst: ~/.gnupg/sshcontrol
     src: gnupg/sshcontrol
+    chmod: '600'
   f_tmux.conf:
     dst: ~/.tmux.conf
     src: tmux.conf
+    chmod: '664'
   f_xdefaults:
     dst: ~/.Xdefaults
     src: Xdefaults
@@ -143,8 +150,8 @@ dotfiles:
   f_kube_config:
     dst: ~/.kube/config
     src: kube/config
-    trans_read: gpg
-    trans_write: gpg
+    trans_install: gpg
+    trans_update: gpg
   f_vimrc:
     src: vimrc
     dst: ~/.vimrc
@@ -157,32 +164,32 @@ dotfiles:
   f_vidalia_vidalia.conf:
     src: vidalia/vidalia.conf
     dst: ~/.vidalia/vidalia.conf
-    trans_read: gpg
-    trans_write: gpg
+    trans_install: gpg
+    trans_update: gpg
   f_ssh_authorized_keys:
     src: ssh/authorized_keys
     dst: ~/.ssh/authorized_keys
   f_nut-monitor_favorites.ini:
     src: nut-monitor/favorites.ini
     dst: ~/.nut-monitor/favorites.ini
-    trans_read: gpg
-    trans_write: gpg
+    trans_install: gpg
+    trans_update: gpg
   f_bashrc.andor:
     src: bashrc.andor
     dst: ~/.bashrc.andor
-    trans_read: gpg
-    trans_write: gpg
+    trans_install: gpg
+    trans_update: gpg
   f_docker_config.json:
     src: docker/config.json
     dst: ~/.docker/config.json
-    trans_read: gpg
-    trans_write: gpg
     chmod: '600'
+    trans_install: gpg
+    trans_update: gpg
   f_arm_armrc:
     src: arm/armrc
     dst: ~/.arm/armrc
-    trans_read: gpg
-    trans_write: gpg
+    trans_install: gpg
+    trans_update: gpg
   f_config_xfce4_xfconf_xfce-perchannel-xml_xsettings.xml:
     src: config/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml
     dst: ~/.config/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml
@@ -221,6 +228,15 @@ profiles:
       git_user: Tobias Vollmer
       MailReader: evolution
       WebBrowser: google-chrome
+  idealo_OSX:
+    dotfiles:
+    - d_kubeconfig
+    - f_ssh_config_10_idealo
+    include:
+    - OSX
+    variables:
+      git_email: tobias.vollmer@idealo.de
+      git_user: Tobias Vollmer
   andor:
     include:
     - common
@@ -264,6 +280,7 @@ profiles:
     variables:
       font_directory: ~/Library/Fonts
       macos_config_script: ~/bin/macos.sh
+      pinentry: pinentry-program /usr/local/MacGPG2/libexec/pinentry-mac.app/Contents/MacOS/pinentry-mac
   adesso:
     dotfiles:
     - f_docker_config.json
@@ -275,16 +292,17 @@ profiles:
       font_directory: ~/Library/Fonts
       git_email: tobias.vollmer@adesso-service.com
       git_user: Tobias Vollmer
-      macos_config_script: true
-trans_write:
-  gpg: gpg -qaer 0x16142EF211C6D2340A0B08F0CD7583FE6D62D2A9 -o- {0} > {1}
-  gpgdir: tar -c -C {0} . | gpg -qaer 0x16142EF211C6D2340A0B08F0CD7583FE6D62D2A9 -o
-    {1}
 variables:
   git_email: info@tvollmer.de
   git_user: 5nafu
   MailReader: thunderbird
   WebBrowser: google-chrome
-trans_read:
+  pinentry: ''
+  macos_config_script: true
+trans_install:
   gpg: gpg -q --for-your-eyes-only --no-tty -d {0} > {1}
   gpgdir: mkdir {1} && gpg -q --for-your-eyes-only --no-tty -d {0} |tar -x -C {1}
+trans_update:
+  gpg: gpg -qaer 0x16142EF211C6D2340A0B08F0CD7583FE6D62D2A9 -o- {0} > {1}
+  gpgdir: tar -c -C {0} . | gpg -qaer 0x16142EF211C6D2340A0B08F0CD7583FE6D62D2A9 -o
+    {1}

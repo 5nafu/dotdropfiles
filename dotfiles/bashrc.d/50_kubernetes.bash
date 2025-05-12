@@ -1,7 +1,20 @@
+kuberctx_installed=false
 if [[ -d ~/git/kubectx ]]; then
     # Source bash completion for kubectx
-    source ~/git/kubectx/completion/kubectx.bash
-    source ~/git/kubectx/completion/kubens.bash
+    for file in  ~/git/kubectx/completion/*.bash; do
+        source $file;
+    done
+    kubectx_installed=true
+fi
+if compgen -G /opt/homebrew/Cellar/kubectx/*/etc/bash_completion.d/ >/dev/null ; then
+    # Source bash completion for kubectx
+    for file in  /opt/homebrew/Cellar/kubectx/*/etc/bash_completion.d/*; do 
+        source $file
+    done
+    kubectx_installed=true
+fi
+
+if $kubectx_installed; then
     source <(kubectl completion bash)
     alias k=kubectl
     alias kx=kubectx
@@ -24,6 +37,10 @@ if [ -f "$HOME/.local/bin/google-cloud-sdk/completion.bash.inc" ]; then . "$HOME
 
 function get_bearer {
     TOKEN=$(kubectl get secrets -o jsonpath="{.items[?(@.metadata.annotations['kubernetes\.io/service-account\.name']=='argo')].data.token}"|base64 --decode )
-    echo "Bearer $TOKEN" |xclip -f
-    echo -e "\n\nToken copied to 'Middle Click'"
+    if hash xclip 2>/dev/null ; then
+        echo "Bearer $TOKEN" |xclip -f
+        echo -e "\n\nToken copied to 'Middle Click'"
+    else
+        echo "Bearer $TOKEN" 
+    fi
 }

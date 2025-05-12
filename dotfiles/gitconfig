@@ -4,10 +4,9 @@
 	email = {{@@ git_email @@}}
 [core]
   editor = vim
-  pager = less -R
+  pager = delta
   autocrlf = input
   whitespace = fix,space-before-tab,tab-in-indent,trailing-space
-  #pager = diff-so-fancy | less --tabs=4 -RFX --pattern '^(Date|added|deleted|modified): '
 
 [apply]
   whitespace = fix
@@ -44,14 +43,14 @@
   curbranch = rev-parse --symbolic-full-name --abbrev-ref HEAD
   bbp =  !sh -c 'git push origin $(git curbranch) 2>&1'
   bbpush = !sh -c 'git push origin $(git curbranch) 2>&1 |grep -o "https://.*" |xargs -r xdg-open'
-  bbpp = !sh -c 'echo "Pull" && git pull origin master && echo "Push" && git bbpush'
-  #oldbranches = !sh -c 'git branch -r --merged | grep -v "HEAD\|master" |xargs -l1 git log -1 --format="%ci %cr %an %D" |sed "s#origin/##" |sort -r'
-  iclone = "!f() { cd /home/tobias.vollmer/git; [[ -d $2 ]] && cd $2 || git clone ssh://git@code.eu.idealo.com:7999/$1/$2.git; }; f"
+  bbpp = !sh -c 'echo "Pull" && git pull origin main && echo "Push" && git bbpush'
+  #oldbranches = !sh -c 'git branch -r --merged | grep -v "HEAD\|main" |xargs -L2 git log -1 --format="%ci %cr %an %D" |sed "s#origin/##" |sort -r'
+  iclone = "!f() { cd $HOME/git; [[ -d $2 ]] && cd $2 ; [[ -d $1 ]] && cd $1 || git clone git@github.com:idealo/$1.git; }; f"
 [push]
       default = matching
-[branch "master"]
+[branch "main"]
   remote = origin
-  merge = refs/heads/master
+  merge = refs/heads/main
 [color]
   diff = auto
   status = auto
@@ -86,3 +85,23 @@
   smudge = git-lfs smudge -- %f
   process = git-lfs filter-process
   required = true
+[interactive]
+    diffFilter = delta --color-only
+
+[delta]
+    features = decorations
+    navigate = true  # use n and N to move between diff sections
+    light = false    # set to true if you're in a terminal w/ a light background color (e.g. the default macOS terminal)
+    side-by-side = true
+[delta "decorations"]
+    commit-decoration-style = bold yellow box ul
+    file-style = bold yellow ul
+    file-decoration-style = none
+    hunk-header-decoration-style = yellow box
+[merge]
+    conflictstyle = diff3
+
+[diff]
+    colorMoved = default
+[commit]
+	gpgsign = true

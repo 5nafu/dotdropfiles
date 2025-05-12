@@ -5,6 +5,9 @@ is_osx || return 1
 PATH="/usr/local/bin:$(path_remove /usr/local/bin)"
 export PATH
 
+PATH="/opt/homebrew/bin/:$PATH"
+export PATH
+
 # Trim new lines and copy to clipboard
 alias c="tr -d '\n' | pbcopy"
 
