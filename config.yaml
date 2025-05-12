@@ -202,19 +202,18 @@ profiles:
     - d_kubectx
     - d_bashrc.d
     - f_bashrc
-    - f_irssi_config
     - f_bash_profile
     - f_dir_colors
     - f_sshcontrol
     - f_ssh_config
     - f_ssh_config_01_global
-    - f_ssh_config_10_idealo
     - f_ssh_config_10_tvollmer
     - f_tmux.conf
   idealo:
     dotfiles:
     - d_config_autorandr
     - d_kubeconfig
+    - f_ssh_config_10_idealo
     include:
     - common
     - linux
@@ -233,6 +232,7 @@ profiles:
     - f_bashrc.andor
     - f_arm_armrc
     - f_config_xfce4_xfconf_xfce-perchannel-xml_xsettings.xml
+    - f_irssi_config
   linux:
     dotfiles:
     - d_autostart
@@ -264,6 +264,17 @@ profiles:
     - common
     variables:
       font_directory: ~/Library/Fonts
+  adesso:
+    dotfiles:
+    - f_docker_config.json
+    - d_fonts
+    - d_kubeconfig
+    include:
+    - common
+    variables:
+      font_directory: ~/Library/Fonts
+      git_email: tobias.vollmer@adesso-service.com
+      git_user: Tobias Vollmer
 trans_write:
   gpg: gpg -qaer 0x16142EF211C6D2340A0B08F0CD7583FE6D62D2A9 -o- {0} > {1}
   gpgdir: tar -c -C {0} . | gpg -qaer 0x16142EF211C6D2340A0B08F0CD7583FE6D62D2A9 -o
