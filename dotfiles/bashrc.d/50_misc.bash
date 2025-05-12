@@ -5,16 +5,6 @@ shopt -s checkwinsize
 # Prevent less from clearing the screen while still showing colors.
 export LESS=-XR
 
-# SSH auto-completion based on entries in known_hosts.
-if [[ -e ~/git/puppet ]] ; then
-    if ! crontab -l 2>&1 | grep -q update_puppet_hostlist; then
-        (crontab -l 2>/dev/null; echo "*/5 * * * * $HOME/bin/update_puppet_hostlist $HOME/git/") \
-            | crontab -
-    fi
-    export HOSTFILE=~/.hostlist.txt
-    complete -o default -o nospace -A hostname -F _sshcomplete ssh
-fi
-
 # Disable ansible cows }:]
 export ANSIBLE_NOCOWS=1
 

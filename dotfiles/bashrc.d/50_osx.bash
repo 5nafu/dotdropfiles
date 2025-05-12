@@ -19,3 +19,5 @@ alias ss="open /System/Library/Frameworks/ScreenSaver.framework/Versions/A/Resou
 
 # Add color output for ls
 alias ls="command ls -G"
+
+[[ -d /opt/homebrew/etc/bash_completion ]] && source /opt/homebrew/etc/bash_completion
