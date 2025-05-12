@@ -1,8 +1,7 @@
 #! /bin/bash
-set -u
 EXEPATH=$(cd "$(dirname "${BASH_SOURCE[0]}")" > /dev/null 2>&1 && pwd)
 
-if [[ "$(uname -s)" -ne "Darwin" ]]; then
+if [[ "$(uname -s)" != "Darwin" ]]; then
   echo "Not an OSX system. Nothing to do."
   exit 0
 fi
@@ -526,12 +525,14 @@ SecurityPrivacy() {
   # ========== Never require password when download from unknown site ==========
   # !!!!! This should not be set !!!!!
   # sudo spctl --master-disable
+  true
 }
 
 SoftwareUpdate() {
   # ========== Automatically keep my Mac up to date ==========
   # @int: how many times a week
   # defaults write com.apple.SoftwareUpdate ScheduleFrequency -int 0
+  true
 }
 
 Network() {
@@ -542,6 +543,7 @@ Network() {
   # - Unchecked
   # defaults write com.apple.controlcenter "NSStatusItem Visible WiFi" -bool false
   # defaults write ~/Library/Preferences/ByHost/com.apple.controlcenter.plist WiFi -int 24
+  true
 }
 
 Bluetooth() {
@@ -552,6 +554,7 @@ Bluetooth() {
   # - Unchecked
   # defaults write com.apple.controlcenter "NSStatusItem Visible Bluetooth" -bool false
   # defaults write ~/Library/Preferences/ByHost/com.apple.controlcenter.plist Bluetooth -int 24
+  true
 }
 
 Sound() {
@@ -562,6 +565,7 @@ Sound() {
   # - Unchecked
   # defaults write com.apple.controlcenter "NSStatusItem Visible Sound" -bool false
   # defaults write ~/Library/Preferences/ByHost/com.apple.controlcenter.plist Sound -int 24
+  true
 }
 
 Displays() {
@@ -773,11 +777,11 @@ TimeMachine() {
 Keyboard() {
   # ========== Key Repeat ==========
   # @int: 15 is the fastest in GUI, but real is 10
-  # defaults write .GlobalPreferences InitialKeyRepeat -int 15
+  defaults write .GlobalPreferences InitialKeyRepeat -int 15
 
   # ========== Delay Until Repeat ==========
   # @int: 2 is the fastest in GUI, but real is 1
-  # defaults write .GlobalPreferences KeyRepeat -int 2
+  defaults write .GlobalPreferences KeyRepeat -int 2
 
   # ========== Adjust keyboard brightness in low light ==========
   NPLIST="/private/var/root/Library/Preferences/com.apple.CoreBrightness.plist"
@@ -1295,6 +1299,7 @@ AppStore() {
   # defaults write com.apple.commerce AutoUpdate -bool true
   # - Disable
   # defaults write com.apple.commerce AutoUpdate -bool false
+  true
 }
 
 ## ----------------------------------------
@@ -1329,6 +1334,7 @@ LaunchPad() {
   # ========== Reset Application Order ==========
   # - Note: This doesn't set row and column num, but just bring default application order back.
   # defaults write com.apple.dock ResetLaunchPad -bool TRUE
+  true
 }
 
 ## ----------------------------------------
@@ -1554,7 +1560,7 @@ ExtraSettings() {
 ##  Main
 ## ----------------------------------------
 MACOS=$(/usr/libexec/PlistBuddy -c "Print:ProductVersion" /System/Library/CoreServices/SystemVersion.plist | awk -F. '{print $1"."$2}')
-if [[ "${MACOS}" == "11.2" ]]; then
+if [[ "${MACOS}" == "11.4" ]]; then
   # Big Sur Version is maintained.
   # If the latest version is updated, add warning message here.
   :
@@ -1581,7 +1587,6 @@ LanguageRegion
 # LaunchPad
 MissionControl
 # Network
-Notifications
 ScreenShot
 # SecurityPrivacy
 Siri
@@ -1590,12 +1595,12 @@ Siri
 Spotlight
 TimeMachine
 Trackpad
-UsersGroups
+# UsersGroups
 
 ## ----------------------------------------
 ##  Cache Clear
 ## ----------------------------------------
-TESTMODE=$1
+TESTMODE="$1"
 if ! ${TESTMODE}; then
   for app in \
     "cfprefsd" \
