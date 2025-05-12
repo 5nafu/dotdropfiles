@@ -1,0 +1,20 @@
+#!/bin/bash
+
+installed=( $(code --list-extensions --show-versions | tr [:upper:] [:lower:] | sed 's/@/-/') )
+
+cd $HOME/.vscode/extensions
+
+for file in *; do
+    echo -n "${file}..."
+    if [[ " ${installed[*]} " =~ " ${file} " ]]; then
+        echo "$(tput setaf 2)OK$(tput sgr 0)"
+    else
+        TEXT="DELETE"
+        if [[ " $1 " == " doit " ]]; then
+            rm -r $file
+            TEXT="DELETED"
+        fi
+        echo "$(tput setaf 1)$TEXT$(tput sgr 0)"
+    fi
+done
+

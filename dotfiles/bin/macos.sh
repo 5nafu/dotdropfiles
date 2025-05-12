@@ -1,4 +1,5 @@
 #! /bin/bash
+set -u
 EXEPATH=$(cd "$(dirname "${BASH_SOURCE[0]}")" > /dev/null 2>&1 && pwd)
 
 if [[ "$(uname -s)" != "Darwin" ]]; then
@@ -777,11 +778,11 @@ TimeMachine() {
 Keyboard() {
   # ========== Key Repeat ==========
   # @int: 15 is the fastest in GUI, but real is 10
-  defaults write .GlobalPreferences InitialKeyRepeat -int 15
+  # defaults write .GlobalPreferences InitialKeyRepeat -int 15
 
   # ========== Delay Until Repeat ==========
   # @int: 2 is the fastest in GUI, but real is 1
-  defaults write .GlobalPreferences KeyRepeat -int 2
+  # defaults write .GlobalPreferences KeyRepeat -int 2
 
   # ========== Adjust keyboard brightness in low light ==========
   NPLIST="/private/var/root/Library/Preferences/com.apple.CoreBrightness.plist"

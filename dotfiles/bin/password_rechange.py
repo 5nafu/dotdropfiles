@@ -64,7 +64,7 @@ def set_password(user_to_change, old_password, new_password, dryrun=False):
         if answer.ok is not True:
             error_api_call(answer.content)
 
-def rechange_password_multiple(username, password, count):
+def rechange_password_multiple(user_to_change, password, count):
     old_password = password
     for run in range(1, count):
         letters = ''.join(random.choices(string.ascii_letters, k=10))
