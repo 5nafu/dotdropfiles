@@ -152,6 +152,9 @@ dotfiles:
   f_vim_colors_tomorrow-night.vim:
     src: vim/colors/Tomorrow-Night.vim
     dst: ~/.vim/colors/Tomorrow-Night.vim
+  f_vim_colors_tomorrow-night-bright.vim:
+    src: vim/colors/Tomorrow-Night-Bright.vim
+    dst: ~/.vim/colors/Tomorrow-Night-Bright.vim
   f_vidalia_vidalia.conf:
     src: vidalia/vidalia.conf
     dst: ~/.vidalia/vidalia.conf
@@ -242,6 +245,7 @@ profiles:
     - f_config_xfce4_helpers.rc
     - f_vimrc
     - f_vim_colors_tomorrow-night.vim
+    - f_vim_colors_tomorrow-night-bright.vim
     - f_ssh_authorized_keys
     - f_docker_config.json
     - f_config_redshift.conf
@@ -249,7 +253,13 @@ profiles:
       font_directory: ~/.local/share/fonts
   OSX:
     dotfiles:
+    - f_vimrc
+    - f_vim_colors_tomorrow-night.vim
+    - f_vim_colors_tomorrow-night-bright.vim
+    - f_ssh_authorized_keys
+    - f_docker_config.json
     - d_fonts
+    - d_kubeconfig
     include:
     - common
     variables:
